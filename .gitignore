@@ -1,0 +1,16 @@
+
+*.asv
+**/old/*
+*.mat
+todo.txt
+*~
+*.png
+*.eps
+**/dev/*
+**/backup/*
+
+
+# exceptions (specific mat files to track)
+!eqLIM.mat
+!eqLSN.mat
+!eqUSN.mat
