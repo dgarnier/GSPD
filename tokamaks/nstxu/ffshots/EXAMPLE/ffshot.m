@@ -1,10 +1,10 @@
 clear all; clc; close all
 
-% Initialization
+%% Initialization
 opts = struct;
-opts.plotit = 1;
+opts.plotit = 0;
 opts.debug = 0;
-opts.verbose = 1;
+opts.verbose = 0;
 
 tok              = load('nstxu_tok').tok;
 shapes           = define_shapes(opts);
@@ -15,9 +15,8 @@ targs            = define_optimization_targets(shapes, tok, settings, opts);
 weights          = define_optimization_weights(targs, settings, opts);
 
 
-%%
-% Solve Grad-Shafanov + circuit dynamics
-soln = pulseGS(tok, shapes, plasma_scalars, init, settings, ...
+%% Solve Grad-Shafanov + circuit dynamics
+soln = GSpulse(tok, shapes, plasma_scalars, init, settings, ...
   targs, weights, opts);
 
 
