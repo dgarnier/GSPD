@@ -147,8 +147,10 @@ dyhat = dytarghat - ehat;
 yhat = dyhat + ykhat;
 xhat = dxhat + x0hat;
     
+e = vec2slstructts(ehat, fds2control, cv.iy, t);
 y = vec2slstructts(yhat, fds2control, cv.iy, t);
 x = vec2slstructts(xhat, fields(cv.ix), cv.ix, t);
+dy = vec2slstructts(dyhat, fds2control, cv.iy, t);
 
 y = copyfields(y,x,[],0);
 

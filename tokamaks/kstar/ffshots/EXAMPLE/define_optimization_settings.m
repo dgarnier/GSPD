@@ -9,7 +9,7 @@ function settings = define_optimization_settings()
 % time base for optimization
 s.t0 = 0.4;
 s.tf = 3;
-s.Nlook = 40;
+s.Nlook = 30;
 s.t = linspace(s.t0, s.tf, s.Nlook)';
 s.dt = mean(diff(s.t));
 
@@ -46,7 +46,7 @@ s.vmin = -s.vmax;
 
 
 % power supply current limits
-s.enforce_current_limits = 1;
+s.enforce_current_limits = 0;
 s.ic_max = [7.5 8.5 9 9 7 3.5 3.5 9 9 7 3.5 8 3]' * 1e3;
 s.ic_min = -s.ic_max;
 

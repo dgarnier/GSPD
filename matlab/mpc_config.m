@@ -102,7 +102,8 @@ end
 
 
 % save prediction model
-config = variables2struct(cv,nx,nu,nw,A,B,Ar,Br,Ad,Bd,Minv,E,F,Fw,Chat,bal);
+config = variables2struct(cv,nx,nu,nw,A,B,Ar,Br,Ad,Bd,Minv,E,F,Fw,Chat,...
+  cmats,bal);
 
 
 
