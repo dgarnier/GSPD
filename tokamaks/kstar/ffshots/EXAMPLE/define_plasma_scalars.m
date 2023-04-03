@@ -21,7 +21,7 @@ s.li.Units = '';
 
 % wmhd, stored thermal energy
 s.wmhd.Time = [0 2.7 10];
-s.wmhd.Data = [0 3.25 3] * 2e4;
+s.wmhd.Data = [0 3.25 3] * 1e5;
 s.wmhd.Units = 'J';
 
 % Rp, plasma resistance in Ohms

@@ -7,14 +7,14 @@
 function settings = define_optimization_settings()
 
 % time base for optimization
-s.t0 = 0.4;
-s.tf = 10;
-s.Nlook = 50;
+s.t0 = 0.8;
+s.tf = 3;
+s.Nlook = 30;
 s.t = linspace(s.t0, s.tf, s.Nlook)';
 s.dt = mean(diff(s.t));
 
 % number of Grad-Shafranov iterations to perform
-s.niter = 2;  
+s.niter = 5;  
 
 % number of vessel modes to use. 
 % vessel modes are computed using a balanced realization on the vessel

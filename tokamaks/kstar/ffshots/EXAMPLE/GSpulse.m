@@ -36,10 +36,10 @@ for iter = 1:settings.niter
   [eqs1, eqs0, pcurrt1] = gs_update_psipla(mpcsoln, tok, shapes,...
     plasma_scalars, settings);
 
-  a = 0.5;
+  a = 1;
   pcurrt = a*pcurrt1 + (1-a)*pcurrt;
 
-  summary_soln_plot(settings.t, shapes, eqs0, tok);
+  % summary_soln_plot(settings.t, shapes, eqs0, tok);
 
 
 %   i = 2;
@@ -57,6 +57,11 @@ soln.mpcsoln = mpcsoln;
 
 
 
+for i = 1:settings.Nlook
+  disp(i)
+  eqs1{i} = find_bry(eqs1{i}.psizr, tok, 0);
+end
+summary_soln_plot(settings.t, shapes, eqs1, tok);
 
 
 

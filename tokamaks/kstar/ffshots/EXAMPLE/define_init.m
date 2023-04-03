@@ -13,23 +13,27 @@
 function init = define_init()
 
 
-tok = load('kstar_tok.mat').tok;
-efits = load('efits23436.mat').efits;
+% tok = load('kstar_tok.mat').tok;
+% efits = load('efits23436.mat').efits;
+% % init.ic = -[4.4 4.5 7 8.7 4 -0.4 -0.95 7 8.7 4 -0.4 2 0.17]' * 1e3;
+% init.ic = -[4.4 4.5 7 8.7 4 -0.4 -0.95 7 8.7 4 -0.4 0 0]' * 1e3;
+% % init.iv = zeros(tok.nv,1);
+% init.iv = load('init').init.iv;
+% 
+% init.v = zeros(tok.nc, 1);
+% 
+% % init.psibry = efits(1).psibry;
+% init.psibry = -2.7;
 
 
-% init.ic = -[4.4 4.5 7 8.7 4 -0.4 -0.95 7 8.7 4 -0.4 2 0.17]' * 1e3;
-init.ic = -[4.4 4.5 7 8.7 4 -0.4 -0.95 7 8.7 4 -0.4 0 0]' * 1e3;
-% init.iv = zeros(tok.nv,1);
-init.iv = load('init').init.iv;
+cccirc = [1 2 3 4 5 6 7 1 2 8 9 10 11 7 13 12 -13 12];
+Pcc = cccirc_to_Pcc(cccirc);
+eq = load('init').init;
 
-init.v = zeros(tok.nc, 1);
-
-% init.psibry = efits(1).psibry;
-init.psibry = -2.7;
-
-
-
-
+init.ic = pinv(Pcc) * eq.ic;
+init.iv = eq.iv;
+init.psibry = eq.psibry;
+init.v = zeros(13,1);
 
 
 

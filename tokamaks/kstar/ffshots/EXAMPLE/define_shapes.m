@@ -30,7 +30,7 @@ efits = load('efits23436.mat').efits;
 tok = load('kstar_tok.mat').tok;
 
 tshapes = [0.8 1.2 1.5 1.8 2 2.3 3 3 10.1]; % which times to grabs shapes from
-t = [0.8 1.2 1.5 1.8 2 2.3 3 9.5 10];       % target times
+t =       [0.8 1.2 1.5 1.8 2 2.3 3 8 10];       % target times
 
 tefit = [efits(:).time];
 [~,i] = min(abs(tefit(:) - tshapes));
@@ -110,9 +110,11 @@ rmin = min(tok.limdata(2,:));
 
 shapes.rx.Time = t;
 shapes.rx.Data = rx;
+% shapes.rx.Data = ones(size(t)) * 1.41;
 
 shapes.zx.Time = t;
 shapes.zx.Data = zx;
+% shapes.zx.Data = ones(size(t)) * -0.88;
 
 shapes.rtouch.Time = t([1 end]);
 shapes.rtouch.Data = [rmin rmin]';
@@ -120,13 +122,20 @@ shapes.rtouch.Data = [rmin rmin]';
 shapes.ztouch.Time = t([1 end]);
 shapes.ztouch.Data = [0 0]';
 
-shapes.rbdef.Time = t;
-shapes.rbdef.Data = rx(:);
-shapes.rbdef.Data(t<=2) = rmin;
+% shapes.rbdef.Time = t;
+% shapes.rbdef.Data = rx(:);
+% shapes.rbdef.Data(t<=2) = rmin;
+% 
+% shapes.zbdef.Time = t;
+% shapes.zbdef.Data = zx(:);
+% shapes.zbdef.Data(t<=2) = 0;
 
+shapes.rbdef.Time = t;
+% shapes.rbdef.Data = min(shapes.rb.Data');
+shapes.rbdef.Data = ones(size(t)) * 1.265;
 shapes.zbdef.Time = t;
-shapes.zbdef.Data = zx(:);
-shapes.zbdef.Data(t<=2) = 0;
+shapes.zbdef.Data = zeros(size(t));
+
 
 shapes = check_structts_dims(shapes); 
 

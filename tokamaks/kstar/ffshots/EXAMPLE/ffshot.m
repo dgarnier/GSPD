@@ -22,7 +22,8 @@ x = resample(icdata, settings.t);
 x.Data = squeeze(x.Data)';
 y = x;
 x.Data = x.Data * pinv(circ.Pcc)';
-x.Data(:,[12 13]) = 0;
+x.Data(:,12) = init.ic(12);
+x.Data(:,13) = init.ic(13);
 targs.ic = x;
 
 %% Solve Grad-Shafanov + circuit dynamics
@@ -33,6 +34,10 @@ soln = GSpulse(tok, shapes, plasma_scalars, init, settings, ...
 
 
 %% Plot results
+for i = 1:settings.Nlook
+  disp(i)
+  soln.eqs{i} = find_bry(soln.eqs{i}.psizr, tok, 0);
+end
 summary_soln_plot(settings.t, shapes, soln.eqs, tok);
 
 
