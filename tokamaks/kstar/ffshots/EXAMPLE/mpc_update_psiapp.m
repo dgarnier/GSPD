@@ -19,6 +19,13 @@ dwts = weights.dwts;
 
 % target psibry that is consistent with targ.ip
 psipla = tok.mpp * pcurrt;
+psipla0 = reshape(psipla(:,1), tok.nz, tok.nr);
+psiapp0 = tok.mpc*init.ic + tok.mpv*init.iv;
+psiapp0 = reshape(psiapp0, tok.nz, tok.nr);
+psi0 = psiapp0 + psipla0;
+eq0 = find_bry(psi0, tok, 0);
+init.psibry = eq0.psibry;
+
 targs.psibry = psibry_dynamics(tok, settings, shapes, plasma_scalars,...
   init, psipla);
 
@@ -45,7 +52,7 @@ x0hat = repmat(x0, Nlook, 1);
 % plasma-coupling term
 w = plasma_coupling(settings.dt, tok, pcurrt);
 w = config.bal.T * w;
-[~,wd] = c2d(config.A, w, dt);
+[~,wd] = c2d(config.Ar, w, dt);
 wd = wd(:);
 
 
@@ -163,13 +170,24 @@ if opts.plotit
   h = plot_structts(y, fds2control, 2);
   h = plot_structts(targs, fds2control, 2, h, '--r');
   drawnow
+
+ 
+  ic = targs.ic.Data';
+  xr = vec2slstructts(ic(:), tok.ccnames, cv.ix, t);
+  h = plot_structts(x, tok.ccnames, 2);
+  h = plot_structts(xr, tok.ccnames, 2, h, '--r');
+  drawnow
+
 end
 
 
 if 0
-  i = 10;
+  i = 50;
   figure
-  contour(tok.rg, tok.zg, reshape(psizr(:,i), tok.nz, tok.nr), 50)
+  psi = reshape(psizr(:,i), tok.nz, tok.nr);
+  eq = find_bry(psi, tok, 0);
+  plot_eq(eq, tok, 'r')
+  title(settings.t(i))  
 end
 
 

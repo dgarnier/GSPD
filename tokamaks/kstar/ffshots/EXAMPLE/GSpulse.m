@@ -13,7 +13,8 @@ weights.dwts   = retimebase(weights.dwts, t);
 
 % dynamics model and any mpc stuff that can be precomputed 
 config = mpc_config(tok, shapes, targs, settings);  
-
+% init.v = -pinv(config.B) * config.A * [init.ic; init.iv];
+init.v = -tok.mcv*(inv(tok.mvv))*diag(tok.resv)*init.iv + tok.resc.*init.ic;
 
 % initialize with estimate of plasma current distribution
 pcurrt = initialize_pcurrt(tok, shapes, plasma_scalars);
@@ -32,13 +33,26 @@ for iter = 1:settings.niter
   mpcsoln = mpc_update_psiapp(pcurrt, args{:});
   
   % Grad-Shafranov iteration
-  [eqs, pcurrt] = gs_update_psipla(mpcsoln, tok, shapes,...
+  [eqs1, eqs0, pcurrt1] = gs_update_psipla(mpcsoln, tok, shapes,...
     plasma_scalars, settings);
+
+  a = 0.5;
+  pcurrt = a*pcurrt1 + (1-a)*pcurrt;
+
+  summary_soln_plot(settings.t, shapes, eqs0, tok);
+
+
+%   i = 2;
+%   close all
+%   eq = find_bry(eqs{i}.psizr, tok, 0);
+%   plot_eq(eq, tok, 'r', 'linewidth', 1)
+%   scatter(shapes.rb.Data(i,:), shapes.zb.Data(i,:), 'k', 'filled')
+%   scatter(shapes.rx.Data(i), shapes.zx.Data(i), 100, 'b', 'filled')
 
 end
 
 
-soln.eqs = eqs;
+soln.eqs = eqs1;
 soln.mpcsoln = mpcsoln;
 
 

@@ -19,7 +19,9 @@ for i = 1:n
   fprintf('[%d] %s \n', i, d(i).name)
 end
 itok = input('');
-if ~ismember(itok, 1:n), itok = 1; end
+if isempty(itok) || ~ismember(itok, 1:n)
+  itok = 1; 
+end
 addpath([GSROOT '/tokamaks'])
 
 

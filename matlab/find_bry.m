@@ -36,7 +36,7 @@ zsearch = zgg(k(in));
 
 % zoom in on x/o-points
 for i = 1:length(in)
-  [rxo(i), zxo(i), psixo(i)] = isoflux_xpFinder(psizr, rsearch(i), zsearch(i), rg, zg);
+  [rxo(i), zxo(i), psixo(i)] = isoflux_xpFinder(rg, zg, psizr, rsearch(i), zsearch(i));
 end
 
 % choose points inside limiter

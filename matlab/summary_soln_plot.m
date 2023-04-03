@@ -51,6 +51,7 @@ function plot_shape(t, times, shapes, eqs, tok)
 
   cla
   hold on
+  % eq = find_bry(eqs{i}.psizr, tok, 0);
   plot_eq(eqs{i}, tok, 'r', 'linewidth', 1.5)
   scatter(ref.rb, ref.zb, 20, 'b', 'filled')
   plot(ref.rx, ref.zx, 'xb', 'linewidth', 4, 'markersize', 14)

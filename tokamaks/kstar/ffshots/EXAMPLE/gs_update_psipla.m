@@ -1,4 +1,4 @@
-function [eqs, pcurrtdata] = gs_update_psipla(...
+function [eqs1, eqs0, pcurrtdata] = gs_update_psipla(...
   mpcsoln, tok, shapes, plasma_scalars, settings)
 
 
@@ -12,27 +12,27 @@ mpp = tok.mpp;
 
 
 % trace boundary
-eqs = cell(N,1);
+eqs0 = cell(N,1);
 for i = 1:N
   fprintf('Tracing boundary: %d of %d ...\n', i, N);
   psizr_i = reshape(psizr(:,i), tok.nz, tok.nr);
-  eqs{i} = find_bry(psizr_i, tok, 0);
+  eqs0{i} = find_bry(psizr_i, tok, 0);
 end
 
 
 if 0
   close all
   i = 40;
-  plot_eq(eqs{i}, tok, 'r', 'linewidth', 1)
+  plot_eq(eqs0{i}, tok, 'r', 'linewidth', 1)
   scatter(shapes.rb.Data(i,:), shapes.zb.Data(i,:), 'k', 'filled')
   scatter(shapes.rx.Data(i), shapes.zx.Data(i), 100, 'b', 'filled')
 end
   
-
+eqs1 = cell(N,1);
 pcurrtdata = zeros(nz*nr,N);
 for i = 1:N
 
-  eq = eqs{i};
+  eq = eqs0{i};
   ip = plasma_scalars.ip.Data(i);
   wmhd = plasma_scalars.wmhd.Data(i);
   li = plasma_scalars.li.Data(i);
@@ -56,7 +56,8 @@ for i = 1:N
   b = struct; 
   b.psin = psin;
   
-  b.p1 = -4 * (-(psin-0.5).^2 + 0.25);                  % basis function for P'
+  % b.p1 = -4 * (-(psin-0.5).^2 + 0.25);                  % basis function for P'
+  b.p1 = 1-psin;
   b.f1 = -polyval([0.54 -0.08 -1.46 1], psin) * 1e-6;   % 1st basis fun for FF'
   b.f2 = -ones(size(psin)) * 1e-6;                      % 2nd basis fun for FF'
   
@@ -102,7 +103,7 @@ for i = 1:N
   eq.psizr = eq.psiapp + eq.psipla;
   
 
-  eqs{i} = eq;
+  eqs1{i} = eq;
   pcurrtdata(:,i) = pcurrt(:);
 end
 
