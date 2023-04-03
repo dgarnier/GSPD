@@ -40,8 +40,8 @@ for iter = 1:settings.niter
   pcurrt = a*pcurrt1 + (1-a)*pcurrt;
 
   if iter >= 2
-    summary_soln_plot(settings.t, shapes, eqs1, tok);
-    pause
+    summary_soln_plot(settings.t, shapes, eqs0, tok);
+    title(iter)
   end
 
 %   i = 2;
@@ -58,12 +58,12 @@ soln.eqs = eqs1;
 soln.mpcsoln = mpcsoln;
 
 
-
-for i = 1:settings.Nlook
-  disp(i)
-  eqs1{i} = find_bry(eqs1{i}.psizr, tok, 0);
-end
-summary_soln_plot(settings.t, shapes, eqs1, tok);
+% 
+% for i = 1:settings.Nlook
+%   disp(i)
+%   eqs1{i} = find_bry(eqs1{i}.psizr, tok, 0);
+% end
+% summary_soln_plot(settings.t, shapes, eqs1, tok);
 
 
 

@@ -29,13 +29,13 @@ end
 % Populate the weights:
 
 % weights on the shaping
-wts.psibry.Data(:)             = 2e6;
+wts.psibry.Data(:)             = 5e6;
 % wts.diff_psicp_psitouch.Data = sigmoidn(t, 2, 2.7, 1, 0) * ones(1,ncp) * 2e7;
 % wts.diff_psicp_psix.Data     = sigmoidn(t, 2, 2.7, 0, 1) * ones(1,ncp) * 2e7;
-wts.diff_psicp_psitouch.Data   = sigmoidn(t, 2, 2.1, 1, 0) * ones(1,ncp) * 5e7;
-wts.diff_psicp_psix.Data       = sigmoidn(t, 2, 2.3, 0, 1) * ones(1,ncp) * 5e5;
-wts.psix_r.Data(:)             = sigmoidn(t, 1.5, 2, 0, 1) * 2e6;
-wts.psix_z.Data(:)             = sigmoidn(t, 1.5, 2, 0, 1) * 2e6;
+wts.diff_psicp_psitouch.Data   = sigmoidn(t, 1.5, 2.3, 1, 0) * ones(1,ncp) * 5e6;
+wts.diff_psicp_psix.Data       = sigmoidn(t, 2, 2.3, 0, 1) * ones(1,ncp) * 5e6;
+wts.psix_r.Data(:)             = sigmoidn(t, 1.5, 2, 0, 1) * 1e8;
+wts.psix_z.Data(:)             = sigmoidn(t, 1.5, 2, 0, 1) * 1e8;
 
 
 % weight the outer boundary point even higher
@@ -43,12 +43,12 @@ wts.psix_z.Data(:)             = sigmoidn(t, 1.5, 2, 0, 1) * 2e6;
 % wts.diff_psicp_psix.Data(:,1) = wts.diff_psicp_psix.Data(:,1) * 30;
 
 
-s = interp1([0 2 10], [10 5 1], t);
-wts.diff_psicp_psitouch.Data = diag(s) * wts.diff_psicp_psitouch.Data;
+% s = interp1([0 2 10], [10 5 1], t);
+% wts.diff_psicp_psitouch.Data = diag(s) * wts.diff_psicp_psitouch.Data;
 % wts.diff_psicp_psix.Data = diag(s) * wts.diff_psicp_psix.Data;
 
 
-wts.ic.Data  = ones(N,1) * [0 0 0 0 0 0 0 0 0 0 0 1e2 1e2];
+wts.ic.Data  = ones(N,1) * [0 0 0 0 0 0 0 0 0 0 0 1e1 1e1];
 
 
 
