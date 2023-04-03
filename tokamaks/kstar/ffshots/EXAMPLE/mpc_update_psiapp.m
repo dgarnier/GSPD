@@ -19,13 +19,13 @@ dwts = weights.dwts;
 
 % target psibry that is consistent with targ.ip
 psipla = tok.mpp * pcurrt;
-% psipla0 = reshape(psipla(:,1), tok.nz, tok.nr);
-% psiapp0 = tok.mpc*init.ic + tok.mpv*init.iv;
-% psiapp0 = reshape(psiapp0, tok.nz, tok.nr);
-% psi0 = psiapp0 + psipla0;
-% eq0 = find_bry(psi0, tok, 0);
-% init.psibry = eq0.psibry;
-init.psibry = -2.25;
+psipla0 = reshape(psipla(:,1), tok.nz, tok.nr);
+psiapp0 = tok.mpc*init.ic + tok.mpv*init.iv;
+psiapp0 = reshape(psiapp0, tok.nz, tok.nr);
+psi0 = psiapp0 + psipla0;
+eq0 = find_bry(psi0, tok, 0);
+init.psibry = eq0.psibry;
+% init.psibry = -2.37;
 
 targs.psibry = psibry_dynamics(tok, settings, shapes, plasma_scalars,...
   init, psipla);

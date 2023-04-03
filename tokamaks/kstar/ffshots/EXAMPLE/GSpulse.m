@@ -14,7 +14,7 @@ weights.dwts   = retimebase(weights.dwts, t);
 % dynamics model and any mpc stuff that can be precomputed 
 config = mpc_config(tok, shapes, targs, settings);  
 % init.v = -pinv(config.B) * config.A * [init.ic; init.iv];
-init.v = -tok.mcv*(inv(tok.mvv))*diag(tok.resv)*init.iv + tok.resc.*init.ic;
+% init.v = -tok.mcv*(inv(tok.mvv))*diag(tok.resv)*init.iv + tok.resc.*init.ic;
 
 % initialize with estimate of plasma current distribution
 pcurrt = initialize_pcurrt(tok, shapes, plasma_scalars);
@@ -39,8 +39,10 @@ for iter = 1:settings.niter
   a = 1;
   pcurrt = a*pcurrt1 + (1-a)*pcurrt;
 
-  % summary_soln_plot(settings.t, shapes, eqs0, tok);
-
+  if iter == 2
+    summary_soln_plot(settings.t, shapes, eqs0, tok);
+    pause
+  end
 
 %   i = 2;
 %   close all

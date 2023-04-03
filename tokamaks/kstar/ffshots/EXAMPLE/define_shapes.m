@@ -29,8 +29,8 @@ function shapes = define_shapes(opts)
 efits = load('efits23436.mat').efits;
 tok = load('kstar_tok.mat').tok;
 
-tshapes = [0.8 1.2 1.5 1.8 2 2.3 3 3 10.1]; % which times to grabs shapes from
-t =       [0.8 1.2 1.5 1.8 2 2.3 3 8 10];       % target times
+tshapes = [0.4 0.8 1.2 1.5 1.8 2 2.3 3 3 10.1]; % which times to grabs shapes from
+t =       [0.4 0.8 1.2 1.5 1.8 2 2.3 3 8 10];       % target times
 
 tefit = [efits(:).time];
 [~,i] = min(abs(tefit(:) - tshapes));
