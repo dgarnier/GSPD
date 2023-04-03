@@ -8,8 +8,8 @@ function settings = define_optimization_settings()
 
 % time base for optimization
 s.t0 = 0.4;
-s.tf = 3;
-s.Nlook = 30;
+s.tf = 10;
+s.Nlook = 100;
 s.t = linspace(s.t0, s.tf, s.Nlook)';
 s.dt = mean(diff(s.t));
 
