@@ -40,7 +40,7 @@ for iter = 1:settings.niter
   pcurrt = a*pcurrt1 + (1-a)*pcurrt;
 
   if iter >= 2
-    summary_soln_plot(settings.t, shapes, eqs0, tok);
+    summary_soln_plot(settings.t, shapes, eqs1, tok);
     pause
   end
 

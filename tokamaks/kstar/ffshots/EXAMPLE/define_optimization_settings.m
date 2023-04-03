@@ -46,7 +46,7 @@ s.vmin = -s.vmax;
 
 
 % power supply current limits
-s.enforce_current_limits = 0;
+s.enforce_current_limits = 1;
 s.ic_max = [7.5 8.5 9 9 7 3.5 3.5 9 9 7 3.5 8 3]' * 1e3;
 s.ic_min = -s.ic_max;
 

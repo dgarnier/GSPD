@@ -142,7 +142,7 @@ duhat = quadprog(H,f,Aineq, bineq, Aeq, beq, lb, ub, duhat0, qpopts);
 
 % extract predictions
 ehat = M*duhat + d;
-dxhat = E*dxk + F*duhat;
+dxhat = E*dxk + F*duhat + Fw*wd;
 dyhat = dytarghat - ehat;
 yhat = dyhat + ykhat;
 xhat = dxhat + x0hat;
