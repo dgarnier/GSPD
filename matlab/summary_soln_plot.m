@@ -46,20 +46,27 @@ end
 function plot_shape(t, times, shapes, eqs, tok)
 
   [~,i] = min(abs(t-times));
-
   ref = structts2struct(shapes, fields(shapes), t);
-
+  
+  
   cla
-  hold on
-  % eq = find_bry(eqs{i}.psizr, tok, 0);
+  hold on  
+  plot([nan nan], [nan nan], 'b', 'linewidth', 2)
+  plot([nan nan], [nan nan], 'r', 'linewidth', 2)
+  plot(ref.rx, ref.zx, 'xb', 'linewidth', 2, 'markersize', 14)
+  try
+    [rx, zx] = isoflux_xpFinder(tok.rg, tok.zg, eqs{i}.psizr, ref.rx, ref.zx);
+    plot(rx, zx, 'xr', 'linewidth', 2, 'markersize', 14)  
+  catch
+  end  
   plot_eq(eqs{i}, tok, 'r', 'linewidth', 1.5)
   scatter(ref.rb, ref.zb, 20, 'b', 'filled')
-  plot(ref.rx, ref.zx, 'xb', 'linewidth', 4, 'markersize', 14)
   scatter(ref.rtouch, ref.ztouch, 100, 'db', 'filled')
-  text(-0.25, -0.1, 'Drag slider to view shape targets.', ...
-    'units', 'normalized', 'fontsize', 11)
-  str = sprintf('eq %d: time=%.3f', i, t);
+  text(-0.25, -0.1, 'Drag slider to view equilibria', 'units', 'normalized', 'fontsize', 11)  
+  text(1.15, -0.1, 'Enter time:', 'units', 'normalized', 'fontsize', 11)  
+  str = sprintf('Equilibrium %d: time=%.3f', i, t);
   title(str, 'fontsize', 14)
+  legend('Target', 'Actual', 'fontsize', 14)
   drawnow
 
 end

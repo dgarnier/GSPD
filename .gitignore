@@ -11,6 +11,9 @@ todo.txt
 
 
 # exceptions (specific mat files to track)
-!eqLIM.mat
-!eqLSN.mat
-!eqUSN.mat
+!*/nstxu/eq/eqLIM.mat
+!*/nstxu/eq/eqLSN.mat
+!*/nstxu/eq/eqUSN.mat
+!*/kstar/eq/init.mat
+!*/kstar/eq/efits23436.mat
+!*/kstar/tok/kstar_tok.mat

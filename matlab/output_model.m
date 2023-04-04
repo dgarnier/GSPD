@@ -1,6 +1,6 @@
 function cmats = output_model(dpsizrdx, tok, shapes, settings)
 
-  N = settings.Nlook;
+  N = settings.N;
   t = settings.t;
   cmats = cell(N,1);
   

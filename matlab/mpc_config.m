@@ -3,28 +3,7 @@
 function config = mpc_config(tok, shapes, targs, settings)
 
 
-% cv will hold indices of the outputs (y), states (x), and inputs (u). 
-% Useful for organizing data.
-cv = struct;
-cv.ynames = settings.fds2control;
-idx = 0;
-for k = 1:length(cv.ynames)    
-  varname = cv.ynames{k};
-  n = size(targs.(varname).Data, 2);  
-  idx = idx(end)+1:idx(end)+n;  
-  cv.iy.(varname) = idx;
-end 
-cv.xnames = {'ic', 'iv'}';
-cv.ix.ic = 1:tok.nc;
-cv.ix.iv = tok.nc + (1:settings.nvessmodes);
-for i = 1:tok.nc
-  cv.ix.(tok.ccnames{i}) = i;
-  cv.iu.(tok.ccnames{i}) = i;
-end
-cv.unames = {'v'};
-nu = length(settings.active_coils);
-cv.iu.v = 1:nu;
-
+%% build dynamics and output models
 
 % build the dynamics model A,B matrices
 M = [tok.mcc tok.mcv; tok.mcv' tok.mvv];
@@ -37,45 +16,58 @@ B = Minv(:,settings.active_coils);
 
 % build the output C matrices
 dpsizrdx = [tok.mpc tok.mpv];
-cmats = output_model(dpsizrdx, tok, shapes, settings);
+Cmats = output_model(dpsizrdx, tok, shapes, settings);
 
 
-% perform a balanced realization on the vessel currents
-% step1: compute balancing transformation matrices
-ivess = tok.nc + (1:tok.nv);
-Avess = A(ivess,ivess);
-Bvess = B(ivess,:);
-Cvess = eye(tok.nv, tok.nv);
-Pvess = ss(Avess,Bvess,Cvess,0);
-[bsys,g,T,Ti] = balreal(Pvess);
-T = blkdiag(eye(tok.nc), T);
-Ti = inv(T);
-iuse = 1:(tok.nc + settings.nvessmodes);
-T = T(iuse,:);
-Ti = Ti(:,iuse);
 
-bal.T = T;
-bal.Ti = Ti;
-bal.info = ['Balanced realization transforming state vector x=[ic;iv] to ' ...
-  'xb=[ic; ivb]. The transformations are xb=T*x and x=Ti*xb.'];
+%% compress model to use fewer vessel modes
 
+if settings.compress_vessel_elements
 
-% step2: reduce models
-for i = 1:length(cmats)
-  cmats{i} = cmats{i} * Ti;
+  % perform a balanced realization on the vessel currents
+  % step1: compute balancing transformation matrices
+  ivess = tok.nc + (1:tok.nv);
+  Avess = A(ivess,ivess);
+  Bvess = B(ivess,:);
+  Cvess = eye(tok.nv, tok.nv);
+  Pvess = ss(Avess,Bvess,Cvess,0);
+  [~,~,Tv,~] = balreal(Pvess);
+  Tvi = inv(Tv);
+  iuse = 1:settings.nvessmodes;
+  Tv = Tv(iuse,:);
+  Tvi = Tvi(:,iuse);
+  Tx = blkdiag(eye(tok.nc), Tv);
+  Txi = blkdiag(eye(tok.nc), Tvi);
+  bal.Tx = Tx;
+  bal.Txi = Txi;  
+  bal.Tv = Tv;
+  bal.Tvi = Tvi;
+else  
+  bal.Tx  = eye(tok.nc + tok.nv);
+  bal.Txi = eye(tok.nc + tok.nv);  
+  bal.Tv = eye(tok.nv);
+  bal.Tvi = eye(tok.nv);
 end
-Chat = blkdiag(cmats{:});
-Ar = T*A*Ti;
-Br = T*B;
+bal.info = ['Balanced realization transformations for compressing vessel' ...
+  ' elements. Let x=[ic;iv], xb=[ic;ivb] with ivb the compressed vessel ' ...
+  'elements. Transformations are: xb=Tx*x, x=Txi*xb, ivb=Tv*iv, iv=Tvi*ivb'];
+ 
+% step2: reduce models
+for i = 1:length(Cmats)
+  Cmats{i} = Cmats{i} * Txi;
+end
+Ar = Tx*A*Txi;
+Br = Tx*B;
 [nx, nu] = size(Br);
 
+%% Build the MPC prediction model
 
 % discretize model
 [Ad, Bd] = c2d(Ar,Br,settings.dt);
 
 
 % Prediction model used in MPC. See published paper for definitions.
-Nlook = settings.Nlook;
+Nlook = settings.N;
 nw = nx;
 E = [];
 F  = [];
@@ -101,9 +93,70 @@ for i = 1:Nlook
 end
 
 
-% save prediction model
-config = variables2struct(cv,nx,nu,nw,A,B,Ar,Br,Ad,Bd,Minv,E,F,Fw,Chat,...
-  cmats,bal);
+
+%% define data indices
+% cv will hold indices of the outputs (y), states (x), and inputs (u). 
+% Useful for organizing data.
+cv = struct;
+
+% the outputs y are defined by fds2control
+cv.ynames = settings.fds2control;
+idx = 0;
+for k = 1:length(cv.ynames)    
+  varname = cv.ynames{k};
+  n = size(targs.(varname).Data, 2);  
+  idx = idx(end)+1:idx(end)+n;  
+  cv.iy.(varname) = idx;
+end 
+
+% the states x are the coil currents and vessel current modes
+cv.xnames = {'ic', 'ivb'}';
+cv.ix.ic = 1:tok.nc;
+cv.ix.ivb = tok.nc + (1:settings.nvessmodes);
+for i = 1:tok.nc
+  cv.ix.(tok.ccnames{i}) = i;  
+end
+cv.xdesc.ic = 'Coil currents.';
+cv.xdesc.ivb = 'Vessel currents (compressed format)';
+
+% the inputs are the voltages on the active coils (subset of the coils)
+cv.unames = {'v'};
+nu = length(settings.active_coils);
+for i = 1:nu
+  nam = tok.ccnames{settings.active_coils(i)};
+  cv.iu.(nam) = i;
+end
+cv.iu.v = 1:nu;
+cv.udesc.v = 'Voltage in the active coil circuits.';
+
+
+%% write descriptions
+d.cv    = '(c)ontrolled (v)ariables struct that holds info on data indices';
+d.nx    = 'number of states in state space model';
+d.nu    = 'number of actuators in state space model';
+d.A     = 'vacuum circuit dynamics A matrix (uncompressed)';
+d.B     = 'vacuum circuit dynamics B matrix (uncompressed)';
+d.Cmats = 'output C matrices of the state-space model';
+d.Ar    = 'vacuum circuit dynamics A matrix (reduced)';
+d.Br    = 'vacuum circuit dynamics B matrix (reduced)';
+d.Ad    = 'vacuum circuit dynamics A matrix (reduced then discretized)';
+d.Bd    = 'vacuum circuit dynamics B matrix (reduced then discretized)';
+d.M     = 'mutual inductance matrix in circuit model';
+d.Minv  = 'inverse of M';
+d.R     = 'resistance matrix in circuit model';
+d.E     = 'E matrix in MPC prediction model (influence of initial state)';
+d.F     = 'F matrix in MPC prediction model (influence of actuator voltages)';
+d.Fw    = 'E matrix in MPC prediction model (influence of plasma current distribution)';
+d.bal   = 'info on balanced realization used to compress vessel elements';
+
+
+%% save config
+config = variables2struct(cv,nx,nu,A,B,Ar,Br,Ad,Bd,M,Minv,R,E,F,Fw,Cmats,bal);
+
+fds = sort(fields(d));
+config = reorderstructure(config, fds{:});
+config.descriptions = reorderstructure(d, fds{:});
+
 
 
 
