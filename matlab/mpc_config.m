@@ -37,21 +37,18 @@ if settings.compress_vessel_elements
   Tv = Tv(iuse,:);
   Tvi = Tvi(:,iuse);
   Tx = blkdiag(eye(tok.nc), Tv);
-  Txi = blkdiag(eye(tok.nc), Tvi);
-  bal.Tx = Tx;
-  bal.Txi = Txi;  
-  bal.Tv = Tv;
-  bal.Tvi = Tvi;
+  Txi = blkdiag(eye(tok.nc), Tvi);  
 else  
-  bal.Tx  = eye(tok.nc + tok.nv);
-  bal.Txi = eye(tok.nc + tok.nv);  
-  bal.Tv = eye(tok.nv);
-  bal.Tvi = eye(tok.nv);
+  Tx = eye(tok.nc + tok.nv);
+  Txi = eye(tok.nc + tok.nv);  
+  Tv = eye(tok.nv);
+  Tvi = eye(tok.nv);
 end
-bal.info = ['Balanced realization transformations for compressing vessel' ...
+info = ['Balanced realization transformations for compressing vessel' ...
   ' elements. Let x=[ic;iv], xb=[ic;ivb] with ivb the compressed vessel ' ...
   'elements. Transformations are: xb=Tx*x, x=Txi*xb, ivb=Tv*iv, iv=Tvi*ivb'];
- 
+bal = variables2struct(info, Tx, Txi, Tv, Tvi);
+
 % step2: reduce models
 for i = 1:length(Cmats)
   Cmats{i} = Cmats{i} * Txi;

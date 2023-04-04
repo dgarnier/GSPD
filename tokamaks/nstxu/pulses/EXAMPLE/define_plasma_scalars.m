@@ -1,10 +1,10 @@
 %  inputs: opts struct
-%          if opts.plotit=true, makes a plot of the plasma scalars
+%          if opts.plotlevel >= 2, makes a plot of the plasma scalars
 % 
 %  outputs: the plasma_scalars struct that has fields:
 %     ip, li, wmhd, Rp each with subfields (Time, Data, Units). 
-%     Units is only used for plotting, i.e. do not
-%     change units from A to kA and expect the code to intelligently adapt. 
+%     Units is only used for plotting, i.e. don't change units 
+%     from A to kA and expect the code to intelligently adapt. 
 %
 function plasma_scalars   = define_plasma_scalars(opts)
 
@@ -29,9 +29,13 @@ s.Rp.Time = [0 0.03 0.075 0.12 0.15 0.24 0.39 0.55 1]';
 s.Rp.Data = [17 12 8 4.7 3.6 2.5 1.8 1.2 1.2]' * 1e-6; 
 s.Rp.Units = 'Ohm';
 
+% format data
+s = check_structts_dims(s); 
+
 plasma_scalars = s;
 
-if opts.plotit
+% plotting
+if opts.plotlevel >= 2
   plot_structts(s, fields(s), 2);
   sgtitle('Plasma scalar targets'); drawnow
 end

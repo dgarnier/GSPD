@@ -9,6 +9,10 @@ plasma_scalars = retimebase(plasma_scalars, t);
 weights.wts    = retimebase(weights.wts, t);
 weights.dwts   = retimebase(weights.dwts, t);
 
+% consistency of vessel modes
+if ~settings.compress_vessel_elements
+  settings.nvessmodes = tok.nv; 
+end
 
 % dynamics model and any mpc stuff that can be precomputed 
 config = mpc_config(tok, shapes, targs, settings);  

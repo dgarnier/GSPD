@@ -2,17 +2,16 @@ clear all; clc; close all
 
 %% Initialization
 opts = struct;
-opts.plotit = 1;
-opts.debug = 0;
-opts.verbose = 0;
+opts.plotlevel = 1;  % 0=no plots, 1=minimal plots, 2=lotsa plots
 
-tok              = load('nstxu_tok').tok;
+tok              = load_tok('nstxu_tok');
 shapes           = define_shapes(opts);
 plasma_scalars   = define_plasma_scalars(opts);
 init             = define_init;
-settings         = define_optimization_settings;
+settings         = define_optimization_settings(tok);
 targs            = define_optimization_targets(shapes, tok, settings, opts);
 weights          = define_optimization_weights(targs, settings, opts);
+
 
 
 %% Solve Grad-Shafanov + circuit dynamics
@@ -22,29 +21,6 @@ soln = GSpulse(tok, shapes, plasma_scalars, init, settings, ...
 
 
 %% Plot results
-summary_soln_plot(settings.t, shapes, soln.eqs, tok);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+if opts.plotlevel >= 1
+  summary_soln_plot(settings.t, shapes, soln.eqs, tok);  
+end

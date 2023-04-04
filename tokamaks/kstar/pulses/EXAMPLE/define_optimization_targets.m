@@ -3,7 +3,7 @@
 % Most of these are zero. In each case the error to be minimized is this
 % target value minus the value at the equilibrium. 
 %
-% To view a summary plot of the weights, set opts.plotit=1
+% To view a summary plot of the weights, set opts.plotlevel>=2
 
 function targs = define_optimization_targets(shapes, tok, settings, opts)
 

@@ -34,6 +34,7 @@ s = check_structts_dims(s);
 
 plasma_scalars = s;
 
+% plotting
 if opts.plotlevel >= 2
   plot_structts(s, fields(s), 2);
   sgtitle('Plasma scalar targets'); drawnow
