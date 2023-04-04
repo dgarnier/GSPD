@@ -1,9 +1,11 @@
 % the startup file just adds various paths
 
+% set environment variable
 GSROOT = fileparts(mfilename('fullpath'));
 setenv('GSROOT', GSROOT);
 
-addpath([GSROOT '/matlab'])
+% add generic paths
+addpath(genpath([GSROOT '/matlab']))
 
 
 % select a tokamak
@@ -19,16 +21,18 @@ for i = 1:n
   fprintf('[%d] %s \n', i, d(i).name)
 end
 itok = input('');
-if ~ismember(itok, 1:n), itok = 1; end
+if isempty(itok) || ~ismember(itok, 1:n)
+  itok = 1; 
+end
 addpath([GSROOT '/tokamaks'])
 
 
-% addpaths
+% addpaths related to the specific tokamak
 tokpath = [d(itok).folder '/' d(itok).name];
 addpath(tokpath)
 addpath([tokpath '/eq'])
 addpath([tokpath '/tok'])
-addpath([tokpath '/matlab'])
+addpath([tokpath '/pulses'])
 
 % clear vars
 clear tokpath d itok n i 

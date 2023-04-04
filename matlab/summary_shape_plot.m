@@ -66,6 +66,7 @@ function plot_shape(t, shapes, tok)
   scatter(rtouch, ztouch, 100, 'db', 'filled')
   axis equal
   axis([min(tok.rg) max(tok.rg) min(tok.zg) max(tok.zg)])
+  text(1.15, -0.1, 'Enter time:', 'units', 'normalized', 'fontsize', 11)    
   text(-0.25, -0.1, 'Drag slider to view shape targets.', ...
     'units', 'normalized', 'fontsize', 11)
 

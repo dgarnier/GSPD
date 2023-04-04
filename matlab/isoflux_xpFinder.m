@@ -1,4 +1,4 @@
-function [rx, zx, psix, is_opoint] = isoflux_xpFinder(psizr, rx0, zx0, rg, zg)
+function [rx, zx, psix, is_opoint] = isoflux_xpFinder(rg, zg, psizr, rx0, zx0)
 %
 % ISOFLUX_XPFINDER
 %

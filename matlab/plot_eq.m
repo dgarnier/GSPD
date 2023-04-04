@@ -1,9 +1,11 @@
 
 function plot_eq(eq, tok, varargin)
 
+
 try
   plot_nstxu_geo(tok)
 catch
+  if size(tok.limdata,1) ~= 2, tok.limdata = tok.limdata'; end
   plot(tok.limdata(2,:), tok.limdata(1,:), 'k')
 end
 

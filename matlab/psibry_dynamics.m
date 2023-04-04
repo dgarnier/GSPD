@@ -9,16 +9,15 @@
 %         then use targ.Rp, targ.Ip to integrate equation.
 
 function psibrytarg = psibry_dynamics(tok, settings, shapes, ...
-  plasma_scalars, init, psizr)
+  plasma_scalars, psibry0, psizr)
 
 
-N = settings.Nlook;
+N = settings.N;
 t = settings.t;
 nz = tok.nz;
 nr = tok.nr;
 rg = tok.rg;
 zg = tok.zg;
-psibry0 = init.psibry;
 Li = [];
 Wmag = [];
 Rp = plasma_scalars.Rp;
@@ -36,7 +35,6 @@ end
 Wmagdot = gradient(Wmag, t);
 psibrydot = -Rp.Data .* ip.Data - 1./ip.Data .* Wmagdot(:);
 psibry = psibry0 + cumtrapz(t, psibrydot);
-
 
 psibrytarg.Time = t(:);
 psibrytarg.Data = psibry(:);

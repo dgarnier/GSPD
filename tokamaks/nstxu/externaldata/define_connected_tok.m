@@ -22,7 +22,9 @@ resv = rxx(circ.iivx);
 resc = rxx(circ.iicx);
 mpc = tok_data_struct.mpc * circ.Pcc;
 mpv = tok_data_struct.mpv * circ.Pvv;
-mpp = (tok_data_struct.mpp + tok_data_struct.mpp') / 2;
+% mpp = (tok_data_struct.mpp + tok_data_struct.mpp') / 2;
+mpp = load('nstxu_obj_config2016_6565.mat').tok_data_struct.mpp;
+
 
 ccnames = circ.ccnames(:);
 nc = circ.ncx;

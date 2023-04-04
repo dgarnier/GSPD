@@ -16,7 +16,7 @@ if ~exist('plotit', 'var'), plotit = 0; end
 rb(end+1) = rb(1);
 zb(end+1) = zb(1); 
 
-for i = 1:size(segs,1)  
+for i = 1:size(segs,1)    
   [ri(i,1), zi(i,1)] = intersections(rb, zb, segs(i,1:2), segs(i,3:4));   
 end
 
