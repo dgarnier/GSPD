@@ -9,12 +9,15 @@ pcurrt = zeros(nz*nr, N);
 
 for i = 1:N
 
-  ip = plasma_scalars.ip.Data(i);
-  rb = shapes.rb.Data(i,:);
-  zb = shapes.zb.Data(i,:);
+  if isfield(shapes, 'pcurrt')
+    p = shapes.pcurrt.Data(i,:);
+  else
+    ip = plasma_scalars.ip.Data(i);
+    rb = shapes.rb.Data(i,:);
+    zb = shapes.zb.Data(i,:);
+    [~,p] = jphi_estimate(rb, zb, ip, tok.rg, tok.zg, opts);
+  end
 
-  [~,p] = jphi_estimate(rb, zb, ip, tok.rg, tok.zg, opts);
-  
   pcurrt(:,i) = p(:);
 end
 

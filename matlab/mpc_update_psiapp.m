@@ -36,8 +36,10 @@ psi0 = psiapp0 + psipla(:,1);
 psi0 = reshape(psi0, tok.nz, tok.nr);
 ref = structts2struct(shapes, {'rb','zb'}, t(1));
 psibry0 = mean(bicubicHermite(tok.rg, tok.zg, psi0, ref.rb, ref.zb));
-targs.psibry = psibry_dynamics(tok, settings, shapes, plasma_scalars,...
-  psibry0, psipla);
+% targs.psibry = psibry_dynamics(tok, settings, shapes, plasma_scalars,...
+%   psibry0, psipla);
+targs.psibry.Time = t(:);
+targs.psibry.Data = ones(N,1)*psibry0;
 
 
 % measure y

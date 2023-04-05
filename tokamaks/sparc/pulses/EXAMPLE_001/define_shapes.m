@@ -23,47 +23,77 @@ function shapes = define_shapes(opts)
 %     only enter the optimization depending on the optimization weights. 
 
 
-
-% In this example I mostly replicate the shapes from kstar shot 23436
-% with slight modifications
-
-efits = load('efits23436.mat').efits;
-tok = load('kstar_tok.mat').tok;
-
-tshapes = [0.4 0.8 1.2 1.5 1.8 2 2.3 3 3 10.1];  % which times to grabs shapes from
-t =       [0.4 0.8 1.2 1.5 1.8 2 2.3 3 8 10];    % target times
-
-tefit = [efits(:).time];
-[~,i] = min(abs(tefit(:) - tshapes));
-efits = efits(i);
+% some reference equilibria to draw new shapes from
+eq0 = load('eq_low_ip').eq;  
+eq1 = load('eqLSN').eq;
+tok   = load('sparc_tok').tok;
 
 
-% copy shape from the efits
+% Define target shapes
+i = 0;
 rb = {};
 zb = {};
-rx = [];
-zx = [];
-N = length(efits);
-
-for i = 1:N  
-  eq = efits(i);
-  k = eq.rbbbs == 0;    % remove the zero padding
-  rb{i} = eq.rbbbs(~k);
-  zb{i} = eq.zbbbs(~k); 
-  [rx(i), zx(i)] = isoflux_xpFinder(eq.rg, eq.zg, eq.psizr, 1.4, -0.9);
-end
+rmin = min(tok.limdata(2,:));
 
 
+% start with a small limited plasma shortly after t=0
+eq = eq0;
+i = i + 1;
+t(i) = 0.5;
+rb{i} = eq.rbbbs;
+zb{i} = eq.zbbbs;
 
-% this code snippet is an example on how one could modify the shape
-% we will increase the elongation of the last equilibrium shape slightly
-i = N;
-s = shape_params(rb{i}, zb{i});
 
-s.elong = s.elong + 0.02;  % modify fields of s as desired
-                           % (elong, aminor, triu, etc)  
+% elongated shape and limited
+eq = eq0;
+i = i + 1;
+t(i) = 2;
+s = shape_params(eq.rbbbs, eq.zbbbs);
+s.elong = 1.3;
+s.aminor = 0.52;
+s.triu = 0.2;
+s.tril = 0.2;
+s.squo = -0.1;
+s.squi = 0.02;
+s.sqli = 0.02;
+s.sqlo = -0.1;
+[rb{i}, zb{i}] = shape_edit(eq.rbbbs, eq.zbbbs, s);
+rb{i} = rb{i} - min(rb{i}) + rmin;
 
-[rb{i}, zb{i}] = shape_edit(rb{i}, zb{i}, s);
+
+% about to divert 
+eq = eq1;
+i = i + 1;
+t(i) = 3;
+s = shape_params(eq.rbbbs, eq.zbbbs);
+s.aminor = 0.55;
+s.elong = 1.9;
+[rb{i}, zb{i}] = shape_edit(eq.rbbbs, eq.zbbbs, s);
+rb{i} = rb{i} - min(rb{i}) + rmin;
+
+
+% divert
+i = i + 1;
+t(i) = 3.4;
+rb{i} = rb{i-1} + 0.03;
+zb{i} = zb{i-1};
+
+
+% hold position
+i = i + 1;
+t(i) = 10;
+rb{i} = rb{i-1};
+zb{i} = zb{i-1};
+
+
+% clf
+% plot(tok.limdata(2,:), tok.limdata(1,:), 'color', [1 1 1] * 0, 'linewidth', 1)
+% hold on
+% for i = 1:length(rb)
+%   plot(rb{i}, zb{i}, 'linewidth', 2)
+% end
+% axis equal
+% axis([1 2.8 -2 2])
 
 
 %% Map target shapes to boundary-control points
@@ -72,23 +102,35 @@ s.elong = s.elong + 0.02;  % modify fields of s as desired
 
 
 % interpolate to finer boundary
+% interpolate to finer boundary
 warning('off', 'MATLAB:polyshape:repairedBySimplify');
 for i = 1:length(rb)
-  [rb{i}, zb{i}] = interparc(rb{i}, zb{i}, 200, 1, 0);  % interpolate
+  [rb{i}, zb{i}] = interparc(rb{i}, zb{i}, 200, 0, 0);  % interpolate
   P = polyshape(rb{i}, zb{i});
   [rc,zc] = centroid(P);
   [rb{i}, zb{i}] = sort_ccw(rb{i}, zb{i}, rc, zc);      % sort 
+  rb{i}(end+1) = rb{i}(1);  % make it a loop
+  zb{i}(end+1) = zb{i}(1);
 end
   
 
+
+% clf
+% plot(tok.limdata(2,:), tok.limdata(1,:), 'color', [1 1 1] * 0, 'linewidth', 1)
+% hold on
+% axis equal
+% axis([1 2.8 -2 2])
+
+
 % define control segments
-segopts.rc = mean(tok.rg) - 0.05; 
+segopts.rc = 1.75; 
 segopts.zc = 0;
-segopts.a = 0.25;
-segopts.b = 0.35;
+segopts.a = 0.3;
+segopts.b = 0.4;
 segopts.plotit = 0;
 segopts.seglength = 4;
 segs = gensegs(40, segopts);
+
 
 
 % find intersections of boundary with segments
@@ -107,7 +149,21 @@ shapes.zb.Data = zcp;
 
 
 %% define x-points, touch points
-rmin = min(tok.limdata(2,:));
+% for time>0.2, just take the lowest boundary z-position as the x-point
+rx = [];
+zx = [];
+
+for i = 1:length(rb)
+  if i >= 3
+    [zx(i), j] = min(zb{i});
+    rx(i) = rb{i}(j);
+  else
+    rx(i) = nan;
+    zx(i) = nan;
+  end
+end
+rx = inpaint_nans(rx(:));
+zx = inpaint_nans(zx(:));
 
 shapes.rx.Time = t;
 shapes.rx.Data = rx;
@@ -115,10 +171,10 @@ shapes.rx.Data = rx;
 shapes.zx.Time = t;
 shapes.zx.Data = zx;
 
-shapes.rtouch.Time = t([1 end]);
+shapes.rtouch.Time = [0 10]';
 shapes.rtouch.Data = [rmin rmin]';
 
-shapes.ztouch.Time = t([1 end]);
+shapes.ztouch.Time = [0 10]';
 shapes.ztouch.Data = [0 0]';
 
 shapes.rbdef.Time = t;
@@ -128,18 +184,16 @@ shapes.zbdef.Time = t;
 shapes.zbdef.Data = zeros(size(t));
 
 
-shapes = check_structts_dims(shapes); 
 
-%% plots
+shapes = check_structts_dims(shapes);
+
 if opts.plotlevel >= 1
   summary_shape_plot(shapes, tok);
-  sgtitle('Shape targets')
-  drawnow 
 end
-if opts.plotlevel >= 2 
+
+if opts.plotlevel >= 2
   plot_structts(shapes, fields(shapes), 3);
-  sgtitle('Shape targets'); 
-  drawnow
+  sgtitle('Shape targets'); drawnow
 end
 
 

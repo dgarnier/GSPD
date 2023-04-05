@@ -47,15 +47,21 @@ end
 % plot shape targets
 function plot_shape(t, shapes, tok)
 
+  % read parameters
   rb = interp1(shapes.rb.Time, shapes.rb.Data, t);
   zb = interp1(shapes.zb.Time, shapes.zb.Data, t);
   rx = interp1(shapes.rx.Time, shapes.rx.Data, t);
   zx = interp1(shapes.zx.Time, shapes.zx.Data, t);
-  rtouch = interp1(shapes.rtouch.Time, shapes.rtouch.Data, t);
-  ztouch = interp1(shapes.ztouch.Time, shapes.ztouch.Data, t);
+
+  if isfield(shapes, 'rtouch')
+    rtouch = interp1(shapes.rtouch.Time, shapes.rtouch.Data, t);
+    ztouch = interp1(shapes.ztouch.Time, shapes.ztouch.Data, t);
+  end
+
   rb(end+1) = rb(1);
   zb(end+1) = zb(1);
 
+  % plot parameters
   cla
   hold on
   title(['Time = ' num2str(t)], 'fontsize', 16)
@@ -63,10 +69,14 @@ function plot_shape(t, shapes, tok)
   plot(rb, zb, 'b')
   scatter(rb, zb, 20, 'r', 'filled')
   plot(rx, zx, 'xb', 'linewidth', 4, 'markersize', 14)
-  scatter(rtouch, ztouch, 100, 'db', 'filled')
+  
+  if isfield(shapes, 'rtouch')
+    scatter(rtouch, ztouch, 100, 'db', 'filled')
+  end
+
   axis equal
   axis([min(tok.rg) max(tok.rg) min(tok.zg) max(tok.zg)])
-  text(1.15, -0.1, 'Enter time:', 'units', 'normalized', 'fontsize', 11)    
+  text(1.02, -0.1, 'Enter time:', 'units', 'normalized', 'fontsize', 11)    
   text(-0.25, -0.1, 'Drag slider to view shape targets.', ...
     'units', 'normalized', 'fontsize', 11)
 

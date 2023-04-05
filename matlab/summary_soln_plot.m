@@ -63,7 +63,7 @@ function plot_shape(t, times, shapes, eqs, tok)
   scatter(ref.rb, ref.zb, 20, 'b', 'filled')
   scatter(ref.rtouch, ref.ztouch, 100, 'db', 'filled')
   text(-0.25, -0.1, 'Drag slider to view equilibria', 'units', 'normalized', 'fontsize', 11)  
-  text(1.15, -0.1, 'Enter time:', 'units', 'normalized', 'fontsize', 11)  
+  text(1.05, -0.1, 'Enter time:', 'units', 'normalized', 'fontsize', 11)  
   str = sprintf('Equilibrium %d: time=%.3f', i, t);
   title(str, 'fontsize', 14)
   legend('Target', 'Actual', 'fontsize', 14)
