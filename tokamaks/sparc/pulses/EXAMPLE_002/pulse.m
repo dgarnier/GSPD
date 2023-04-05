@@ -24,4 +24,9 @@ soln = GSpulse(tok, shapes, plasma_scalars, init, settings, ...
 %% Plot results
 if opts.plotlevel >= 1
   summary_soln_plot(settings.t, shapes, soln.eqs, tok);  
+
+  figure
+  plot_structts(soln.mpcsoln, tok.ccnames, 4)
+
 end
+

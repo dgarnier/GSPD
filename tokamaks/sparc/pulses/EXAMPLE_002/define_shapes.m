@@ -44,7 +44,7 @@ segs = gensegs(40, segopts);
 [rbbbs, zbbbs] = seg_intersections(eq.rbbbs, eq.zbbbs, segs, 0);  
 [rx, zx] = isoflux_xpFinder(tok.rg, tok.zg, eq.psizr, 1.5, -1.15);
 
-t = [0 1 2 3 4];
+t = [0 2 3 4 5];
 
 % strike point oscillations
 rsp = [1.79 1.79 1.54 1.79 1.54];

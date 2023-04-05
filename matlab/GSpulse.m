@@ -40,7 +40,7 @@ for iter = 1:settings.niter
 
 end
 
-%   summary_soln_plot(settings.t, shapes, eqs1, tok);  
+%   summary_soln_plot(settings.t, shapes, eqs, tok);  
 
 %   summary_soln_plot(settings.t, shapes, eqs0, tok);  
 
