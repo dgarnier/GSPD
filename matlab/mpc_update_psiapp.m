@@ -162,7 +162,9 @@ xhat = dxhat + x0hat;
     
 y = vec2structts(yhat, fds2control, cv.iy, t);
 x = vec2structts(xhat, fields(cv.ix), cv.ix, t);
+u = vec2structts(duhat, fields(cv.iu), cv.iu, t);
 y = copyfields(y,x,[],0);
+y = copyfields(y,u,[],0);
 
 psiapp = [tok.mpc tok.mpv] * config.bal.Txi * [x.ic.Data'; x.ivb.Data'];
 psizr = psiapp + psipla;

@@ -40,10 +40,6 @@ for iter = 1:settings.niter
 
 end
 
-%   summary_soln_plot(settings.t, shapes, eqs, tok);  
-
-%   summary_soln_plot(settings.t, shapes, eqs0, tok);  
-
 % final boundary tracing
 fprintf('\nPerforming final boundary trace\n\n')
 for i = 1:settings.N
