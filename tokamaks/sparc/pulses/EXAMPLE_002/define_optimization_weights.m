@@ -40,7 +40,7 @@ wts.psibry.Data(:) = 5e6;
 % wt on flux err vs x-point
 wts.diff_psicp_psix.Data  = ones(N,ncp) * 1e6;
 wts.diff_psicp_psix.Data(:,1) = 5e6;
-wts.diff_psicp_psix.Data(:,11) = 1e7;
+wts.diff_psicp_psix.Data(:,13) = 1e7;
 wts.diff_psicp_psix.Data(:,21) = 5e6;
 wts.diff_psicp_psix.Data(:,31) = 5e6;
 wts.diff_psicp_psix.Data(:,end) = 5e8;

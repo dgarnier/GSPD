@@ -28,7 +28,7 @@ targs.diff_psicp_psitouch.Data = zeros(N,ncp);
 targs.diff_psicp_psitouch.Time = t;
 
 % coil currents - target is to hold them constant at initial values
-targs.ic.Data = zeros(N,1) * load('sweep_init').eq.ic';
+targs.ic.Data = ones(N,1) * load('sweep_init').eq.ic';
 targs.ic.Time = t;
 
 
