@@ -41,21 +41,14 @@ soln = GSpulse(tok, shapes, plasma_scalars, init, settings, targs, weights);
 Examples are included for NSTX-U, KSTAR, and SPARC tokamaks. A description of the included examples is as follows:
 
 
-```
-nstxu EXAMPLE_001: equilibria sequence for an entire nstxu shot through rampup and transition from limited to diverted. Medium elongation. Illustrates features such as that for the same shape, strike points move during the Ohmic coil ramp.
-```
+- **nstxu EXAMPLE_001:** equilibria sequence for an entire nstxu shot through rampup and transition from limited to diverted. Medium elongation. Illustrates features such as that for the same shape, strike points move during the Ohmic coil ramp.
 
-```
-nstxu EXAMPLE_002: Similar to above, but for a high elongation shot (loosely replicates 204118) that is closer to current limits. 
-```
+- **nstxu EXAMPLE_002:** Similar to above, but for a high elongation shot (loosely replicates 204118) that is closer to current limits. 
 
-```
-kstar EXAMPLE: computes a sequence of equilibria starting with rampup and then diverting, loosely based on kstar shot 23436. 
-```
+- **kstar EXAMPLE:** computes a sequence of equilibria starting with rampup and then diverting, loosely based on kstar shot 23436. 
 
-```
-sparc EXAMPLE: designs a strike point sweep that holds core shaping constant and satisfies power supply constraints, beginning with a 5MA, lower-single null equilibrium. 
-```
+- **sparc EXAMPLE:** designs a strike point sweep that holds core shaping constant and satisfies power supply constraints, beginning with a 5MA, lower-single null equilibrium. 
+
 
 To run any of these:
 ```
