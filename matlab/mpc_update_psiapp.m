@@ -30,16 +30,23 @@ Chat = blkdiag(Cmats{:});
 psipla = tok.mpp * pcurrt;
 
 
-% find the targ.psibry that is consistent with targ.ip
-psiapp0 = tok.mpc*init.ic + tok.mpv*init.iv;
-psi0 = psiapp0 + psipla(:,1);
-psi0 = reshape(psi0, tok.nz, tok.nr);
-ref = structts2struct(shapes, {'rb','zb'}, t(1));
-psibry0 = mean(bicubicHermite(tok.rg, tok.zg, psi0, ref.rb, ref.zb));
-% targs.psibry = psibry_dynamics(tok, settings, shapes, plasma_scalars,...
-%   psibry0, psipla);
-targs.psibry.Time = t(:);
-targs.psibry.Data = ones(N,1)*psibry0;
+% % find the targ.psibry that is consistent with targ.ip
+% psiapp0 = tok.mpc*init.ic + tok.mpv*init.iv;
+% psi0 = psiapp0 + psipla(:,1);
+% psi0 = reshape(psi0, tok.nz, tok.nr);
+% ref = structts2struct(shapes, {'rb','zb'}, t(1));
+% psibry0 = mean(bicubicHermite(tok.rg, tok.zg, psi0, ref.rb, ref.zb));
+% % targs.psibry = psibry_dynamics(tok, settings, shapes, plasma_scalars,...
+% %   psibry0, psipla);
+% targs.psibry.Time = t(:);
+% targs.psibry.Data = ones(N,1)*psibry0;
+
+
+% find the targs.psibry that is consistent with targs.ip
+if ~settings.specify_psibry_directly   
+ targs.psibry = compute_psibry(init, tok, settings, shapes, ...
+  plasma_scalars, psipla);
+end
 
 
 % measure y

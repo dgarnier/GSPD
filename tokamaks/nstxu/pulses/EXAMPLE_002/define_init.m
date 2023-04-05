@@ -8,12 +8,13 @@
 %                     weighting the derivative of voltages and can often
 %                     be set to zero. 
 %
-% These currents are taken from the vacuum simulation
+% For this example, we will grab these values from the presaved equilibrium
+% from shot 204660 at t=30ms.
 
 function init = define_init()
 
-init = load('init').init;  % contains ic and iv
-init.v = zeros(19,1);
-  
+eq = load('eq204660_030.mat').eq;
 
-init.ic([13 14]) = init.ic([13 14]) - 1000;
+init.ic = eq.icx;
+init.iv = eq.ivx;
+init.v  = zeros(8,1);  

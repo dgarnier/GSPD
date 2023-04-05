@@ -38,35 +38,28 @@ wts.psibry.Data(:) = 5e6;
 
 
 % wt on flux err vs touch-point starts on and turns off as plasma diverts
-wts.diff_psicp_psitouch.Data = sigmoidn(t, 2.5, 3, 1, 0) * ones(1,ncp) * 5e6;
+wts.diff_psicp_psitouch.Data = sigmoidn(t, 0.15, 0.2, 1, 0) * ones(1,ncp) * 5e6;
 
 
 % wt on flux err vs x-point starts off and turns on as plasma diverts
-wts.diff_psicp_psix.Data  = sigmoidn(t, 2.5, 3, 0, 1) * ones(1,ncp) * 5e6;
+wts.diff_psicp_psix.Data  = sigmoidn(t, 0.15, 0.2, 0, 1) * ones(1,ncp) * 5e6;
 
 
 % weight on flux gradient turns on as plasma diverts
-wts.psix_r.Data(:) = sigmoidn(t, 2.5, 3, 0, 1) * 3e7;
-wts.psix_z.Data(:) = sigmoidn(t, 2.5, 3, 0, 1) * 3e7;
+wts.psix_r.Data(:) = sigmoidn(t, 0.15, 0.25, 0, 1) * 3e7;
+wts.psix_z.Data(:) = sigmoidn(t, 0.15, 0.25, 0, 1) * 3e7;
 
 
 % weight the outer boundary point even higher
 wts.diff_psicp_psitouch.Data(:,1) = wts.diff_psicp_psitouch.Data(:,1) * 30;
 wts.diff_psicp_psix.Data(:,1)     = wts.diff_psicp_psix.Data(:,1) * 30;
 
-
-% all coils free except VSC
-% wts.ic.Data  = ones(N,1) * [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1e1];
-wts.ic.Data  = ones(N,1) * [ones(1,18)*0.01 1];
-
-
 % no weight on absolute voltage
 wts.v.Data = zeros(N,nu);   
 
 % weight on the change in voltage - as is, the weights are roughly
 % proportional to 1/coil inductance, but not too sensitive to the weighting
-dwts.v.Data = ones(N,1) * [1 1 3 3 3 3 4 4 1 1 1 1 0.5 0.5 20 20 20 20 100] * 1;
-
+dwts.v.Data = ones(N,1) * [1 1 1 1 0.2 1 1 1];
 
 weights = variables2struct(wts, dwts);
 

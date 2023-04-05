@@ -22,5 +22,9 @@ soln = GSpulse(tok, shapes, plasma_scalars, init, settings, ...
 
 %% Plot results
 if opts.plotlevel >= 1
-  summary_soln_plot(settings.t, shapes, soln.eqs, tok);  
+  summary_soln_plot(settings.t, shapes, soln.eqs, tok);  % plots shapes
+  plot_structts(soln.mpcsoln, tok.ccnames, 4);  % plots individual coil currents
+  sgtitle('Coil currents')
+  plot_structts(soln.mpcsoln, {'v'});        % plots power supply voltages   
+  sgtitle('Power supply voltages')
 end

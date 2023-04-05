@@ -34,8 +34,10 @@ targs.ic.Time = t;
 
 % psibry target will be computed automatically to satisfy Ip in
 % mpc_update_psiapp.m
-targs.psibry.Data = nan(size(t));  
+targs.psibry.Data = ones(size(t)) * 1.00;  
 targs.psibry.Time = t;
+
+targs = check_structts_dims(targs);
 
 if opts.plotlevel >= 2
   h = plot_structts(targs, settings.fds2control, 3, [], 'linewidth', 1.5);

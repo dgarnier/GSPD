@@ -37,6 +37,13 @@ s.compress_vessel_elements = 1;    % whether or not to compress vessels
 s.nvessmodes = 40;                 % number of modes to retain
 
 
+% If 1, target psibry is specified directly (via targs.psibry.Time,
+% targs.psibry.Data). If 0 (recommended for most uses), psibry is 
+% computed to be consistent with the Ip,Rp,shape evolution. 
+% See compute_psibry.m
+s.specify_psibry_directly = 0;
+
+
 % fds2control are the variables that will be explicitly controlled by
 % the optimization algorithm. See measure_ys.m and output_model.m for how
 % each is modeled and measured:

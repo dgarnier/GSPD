@@ -9,7 +9,7 @@
 function settings = define_optimization_settings(tok)
 
 % time base for optimization
-s.t0 = 0.5;                       % start time
+s.t0 = 0;                         % start time
 s.tf = 4;                         % end time
 s.N = 30;                         % number of timepoints (equilibria), more than 100 takes a while
 s.t = linspace(s.t0, s.tf, s.N)'; % timebase
@@ -17,7 +17,7 @@ s.dt = mean(diff(s.t));           % time step
 
 
 % number of Grad-Shafranov iterations to perform
-s.niter = 2;  
+s.niter = 3;  
 
 
 % relaxation factor for updating the plasma current each iteration. It is 
@@ -33,6 +33,12 @@ s.compress_vessel_elements = 1;  % whether or not to compress vessels
 s.nvessmodes = 40;               % number of modes to retain
 
 
+% If 1, target psibry is specified directly (via targs.psibry.Time,
+% targs.psibry.Data). If 0 (recommended for most uses), psibry is 
+% computed to be consistent with the Ip,Rp,shape evolution. 
+% See compute_psibry.m
+s.specify_psibry_directly = 1;
+
 
 % fds2control are the variables that will be explicitly controlled by
 % the optimization algorithm. See measure_ys.m and output_model.m for how
@@ -45,12 +51,10 @@ s.nvessmodes = 40;               % number of modes to retain
 % psix_r              - flux derivative wrt r at target x-point
 % psix_z              - flux derivative wrt z at target x-point
 
-s.fds2control = {'ic', 'diff_psicp_psix', 'diff_psicp_psitouch', ...
-  'psibry', 'psix_r', 'psix_z'}';
+s.fds2control = {'ic', 'diff_psicp_psix', 'psibry', 'psix_r', 'psix_z'}';
 
 d.ic                  = 'current in coils';
 d.diff_psicp_psix     = 'flux error at control points vs x-point';
-d.diff_psicp_psitouch = 'flux error at control points vs touch point';
 d.psibry              = 'flux at boundary defining point';
 d.psix_r              = 'flux derivative wrt r at target x-point';
 d.psix_z              = 'flux derivative wrt z at target x-point';
@@ -66,9 +70,9 @@ s.vmax = [2.6 2.6 1 1 1 1 1 1 1 1 2.6 2.6 2.6 2.6 0.55 0.55 0.55 0.55 1.1]' * 1e
 s.vmin = -s.vmax;
 
 % power supply current limits
-s.enforce_current_limits = 0;
+s.enforce_current_limits = 1;
 s.ic_max = [45*ones(1,14) 32*ones(1,4) 10]' * 1000;
-s.ic_min = [45*ones(1,14) 32*ones(1,4) 10]' * 1000;
+s.ic_min = -s.ic_max;
 
 
 % basis functions for FF' and P' in the Grad-Shafranov equation. Used in

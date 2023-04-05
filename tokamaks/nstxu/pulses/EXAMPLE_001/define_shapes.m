@@ -24,9 +24,9 @@ function shapes = define_shapes(opts)
 
 
 % some reference equilibria to draw new shapes from
-eq0 = load('eq_low_ip').eq;  
-eq1 = load('eqLSN').eq;
-tok   = load('sparc_tok').tok;
+eqLIM = load('eqLIM').eq;  
+eqLSN = load('eqLSN').eq;
+tok   = load('nstxu_tok').tok;
 
 
 % Define target shapes
@@ -36,65 +36,55 @@ zb = {};
 rmin = min(tok.limdata(2,:));
 
 
-% start with a small limited plasma shortly after t=0
-eq = eq0;
+% start with a small limited plasma at t=0
+eq = eqLIM;
 i = i + 1;
-t(i) = 0.5;
-rb{i} = eq.rbbbs;
-zb{i} = eq.zbbbs;
-
-
-% elongated shape and limited
-eq = eq0;
-i = i + 1;
-t(i) = 2;
+t(i) = 0;
 s = shape_params(eq.rbbbs, eq.zbbbs);
-s.elong = 1.3;
-s.aminor = 0.52;
+s.zsurf = -0.02;
+s.aminor = 0.48;
 s.triu = 0.2;
 s.tril = 0.2;
-s.squo = -0.1;
-s.squi = 0.02;
-s.sqli = 0.02;
-s.sqlo = -0.1;
 [rb{i}, zb{i}] = shape_edit(eq.rbbbs, eq.zbbbs, s);
 rb{i} = rb{i} - min(rb{i}) + rmin;
 
 
-% about to divert 
-eq = eq1;
+% keep same small limited plasma at t=0.1
 i = i + 1;
-t(i) = 3;
-s = shape_params(eq.rbbbs, eq.zbbbs);
-s.aminor = 0.55;
-s.elong = 1.9;
-[rb{i}, zb{i}] = shape_edit(eq.rbbbs, eq.zbbbs, s);
-rb{i} = rb{i} - min(rb{i}) + rmin;
-
-
-% divert
-i = i + 1;
-t(i) = 3.4;
-rb{i} = rb{i-1} + 0.03;
-zb{i} = zb{i-1};
-
-
-% hold position
-i = i + 1;
-t(i) = 10;
+t(i) = 0.1;
 rb{i} = rb{i-1};
 zb{i} = zb{i-1};
 
 
-% clf
-% plot(tok.limdata(2,:), tok.limdata(1,:), 'color', [1 1 1] * 0, 'linewidth', 1)
-% hold on
-% for i = 1:length(rb)
-%   plot(rb{i}, zb{i}, 'linewidth', 2)
-% end
-% axis equal
-% axis([1 2.8 -2 2])
+% plasma is about to divert at t=0.2
+% larger limited plasma but with an x-point
+eq = eqLSN;
+i = i + 1;
+t(i) = 0.2;
+s = shape_params(eq.rbbbs, eq.zbbbs);
+s.zsurf = -0.02;
+s.elong = 1.6;
+s.triu = 0.3;
+s.squo = -0.05;
+s.squi = -0.0;
+s.sqli = -0.31;
+s.sqlo = -0.2;
+[rb{i}, zb{i}] = shape_edit(eq.rbbbs, eq.zbbbs, s);
+rb{i} = rb{i} - min(rb{i}) + rmin;
 
+% divert plasma by moving radially from wall at t=0.23
+i = i + 1;
+t(i) = 0.29;
+rb{i} = rb{i-1} + 0.03;
+zb{i} = zb{i-1};
+
+
+% keep the same shape until shot end at t=1
+i = i + 1;
+t(i) = 1;
+rb{i} = rb{i-1};
+zb{i} = zb{i-1};
+t = t(:);
 
 %% Map target shapes to boundary-control points
 % At this point, each of the (rb{i}, zb{i}) define a shape. Now sort these
@@ -102,35 +92,20 @@ zb{i} = zb{i-1};
 
 
 % interpolate to finer boundary
-% interpolate to finer boundary
-warning('off', 'MATLAB:polyshape:repairedBySimplify');
 for i = 1:length(rb)
-  [rb{i}, zb{i}] = interparc(rb{i}, zb{i}, 200, 0, 0);  % interpolate
-  P = polyshape(rb{i}, zb{i});
-  [rc,zc] = centroid(P);
-  [rb{i}, zb{i}] = sort_ccw(rb{i}, zb{i}, rc, zc);      % sort 
-  rb{i}(end+1) = rb{i}(1);  % make it a loop
-  zb{i}(end+1) = zb{i}(1);
+  [rb{i}, zb{i}] = interparc(rb{i}, zb{i}, 200, 1, 0);  % interpolate
+  [rb{i}, zb{i}] = sort_ccw(rb{i}, zb{i}, 0.9, 0);      % sort 
 end
   
 
-
-% clf
-% plot(tok.limdata(2,:), tok.limdata(1,:), 'color', [1 1 1] * 0, 'linewidth', 1)
-% hold on
-% axis equal
-% axis([1 2.8 -2 2])
-
-
 % define control segments
-segopts.rc = 1.75; 
+segopts.rc = 0.85; 
 segopts.zc = 0;
 segopts.a = 0.3;
-segopts.b = 0.4;
+segopts.b = 0.5;
 segopts.plotit = 0;
 segopts.seglength = 4;
 segs = gensegs(40, segopts);
-
 
 
 % find intersections of boundary with segments
@@ -154,7 +129,7 @@ rx = [];
 zx = [];
 
 for i = 1:length(rb)
-  if i >= 3
+  if t(i) >= 0.2
     [zx(i), j] = min(zb{i});
     rx(i) = rb{i}(j);
   else
@@ -171,21 +146,20 @@ shapes.rx.Data = rx;
 shapes.zx.Time = t;
 shapes.zx.Data = zx;
 
-shapes.rtouch.Time = [0 10]';
-shapes.rtouch.Data = [rmin rmin]';
+shapes.rtouch.Time = [0 1]';
+shapes.rtouch.Data = [0.315 0.315]';
 
-shapes.ztouch.Time = [0 10]';
+shapes.ztouch.Time = [0 1]';
 shapes.ztouch.Data = [0 0]';
 
 shapes.rbdef.Time = t;
-shapes.rbdef.Data = min(shapes.rb.Data');
+shapes.rbdef.Data = rx(:);
+shapes.rbdef.Data(t<=0.2) = 0.315;
 
 shapes.zbdef.Time = t;
-shapes.zbdef.Data = zeros(size(t));
+shapes.zbdef.Data = zx(:);
+shapes.zbdef.Data(t<=0.2) = 0;
 
-
-
-shapes = check_structts_dims(shapes);
 
 if opts.plotlevel >= 1
   summary_shape_plot(shapes, tok);
