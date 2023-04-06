@@ -1,4 +1,4 @@
-# GSpulse
+# GSpulsedesign
 
 ## The very quickstart guide
 
