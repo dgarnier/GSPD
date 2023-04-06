@@ -2,7 +2,7 @@
 
 ## The very quickstart guide
 
-**Description:** GSpulse lets you design a sequence of Grad-Shafranov plasma equilibria for a plasma pulse. Equilibria satisfy both force balance and circuit dynamics. 
+**Description:** GSpulsedesign lets you design a sequence of Grad-Shafranov plasma equilibria for a plasma pulse. Equilibria satisfy both force balance and circuit dynamics. 
 
 ```
 Step 1: run startup.m
@@ -12,7 +12,7 @@ Step 2: cd to a <tokamak>/pulses/EXAMPLE folder and run pulse.m
 
 ## The longer quickstart guide 
 
-**Description:** GSpulse is a free-boundary equilibrium solver that solves multiple equilibria at the same time while also satisfying the circuit dynamics of the tokamak. The optimization can be specified so that power supply current and voltage limits are observed. 
+**Description:** GSpulsedesign is a free-boundary equilibrium solver that solves multiple equilibria at the same time while also satisfying the circuit dynamics of the tokamak. The optimization can be specified so that power supply current and voltage limits are observed. 
 
 It is designed to answer questions like:
 
