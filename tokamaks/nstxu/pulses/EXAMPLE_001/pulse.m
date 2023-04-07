@@ -2,7 +2,7 @@ clear all; clc; close all
 
 %% Initialization
 opts = struct;
-opts.plotlevel = 1;  % 0=no plots, 1=minimal plots, 2=lotsa plots
+opts.plotlevel = 2;  % 0=no plots, 1=minimal plots, 2=lotsa plots
 
 tok              = load_tok('nstxu_tok');
 shapes           = define_shapes(opts);

@@ -58,7 +58,7 @@ end
 % this code snippet is an example on how one could modify the shape
 % we will increase the elongation of the last equilibrium shape slightly
 i = N;
-s = shape_params(rb{i}, zb{i});
+s = shape_analysis(rb{i}, zb{i});
 
 s.elong = s.elong + 0.02;  % modify fields of s as desired
                            % (elong, aminor, triu, etc)  
