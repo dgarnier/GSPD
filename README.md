@@ -34,7 +34,7 @@ settings         = define_optimization_settings();
 targs            = define_optimization_targets();
 weights          = define_optimization_weights();
 
-soln = GSpulse(tok, shapes, plasma_scalars, init, settings, targs, weights);
+soln = GSPD(tok, shapes, plasma_scalars, init, settings, targs, weights);
 
 ```
 

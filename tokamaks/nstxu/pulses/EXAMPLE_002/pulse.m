@@ -15,7 +15,7 @@ weights          = define_optimization_weights(targs, settings, opts);
 
 
 %% Solve Grad-Shafanov + circuit dynamics
-soln = GSpulse(tok, shapes, plasma_scalars, init, settings, ...
+soln = GSPD(tok, shapes, plasma_scalars, init, settings, ...
   targs, weights, opts);
 
 
