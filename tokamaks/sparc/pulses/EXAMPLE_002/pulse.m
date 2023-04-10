@@ -29,5 +29,10 @@ if opts.plotlevel >= 1
   
   plot_structts(soln.mpcsoln, {'v'});                    % plots power supply voltages   
   sgtitle('Power supply voltages')
+
+  plot_structts(soln.mpcsoln, {'iv'});
+  
+
+
 end
 
