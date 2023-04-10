@@ -30,9 +30,8 @@ if opts.plotlevel >= 1
   plot_structts(soln.mpcsoln, {'v'});                    % plots power supply voltages   
   sgtitle('Power supply voltages')
 
-  plot_structts(soln.mpcsoln, {'iv'});
-  
-
-
+  h = plot_structts(soln.mpcsoln, {'psibry'});           % plot boundary flux
+  h = plot_structts(soln.targs, {'psibry'}, 1, h, '--r');
+  legend('Actual', 'Target', 'fontsize', 14)
 end
 

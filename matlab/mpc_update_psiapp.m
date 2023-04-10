@@ -5,7 +5,7 @@
 % Outputs: mpcsoln - struct with timeseries data on the currents and flux
 %                    errors and flux evolution          
 
-function mpcsoln = mpc_update_psiapp(iter, pcurrt, config, tok, shapes, ...
+function [mpcsoln, targs] = mpc_update_psiapp(iter, pcurrt, config, tok, shapes, ...
   plasma_scalars, init, settings, targs, weights, opts)
 
 

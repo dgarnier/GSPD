@@ -30,7 +30,7 @@ for iter = 1:settings.niter
 
   % dynamics optimization
   fprintf('  computing coil trajectories...\n\n')
-  mpcsoln = mpc_update_psiapp(iter, pcurrt, config, tok, shapes, ...
+  [mpcsoln, targs] = mpc_update_psiapp(iter, pcurrt, config, tok, shapes, ...
     plasma_scalars, init, settings, targs, weights, opts);
   
 
@@ -49,7 +49,8 @@ end
 
 
 % save outputs
-soln = variables2struct(eqs, mpcsoln, config);
+soln = variables2struct(eqs, mpcsoln, config, shapes, targs, ...
+  plasma_scalars, weights, settings);
 
 
 

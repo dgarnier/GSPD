@@ -127,7 +127,7 @@ segopts.rc = 1.75;
 segopts.zc = 0;
 segopts.a = 0.3;
 segopts.b = 0.4;
-segopts.plotit = 1;
+segopts.plotit = 0;
 segopts.seglength = 4;
 segs = gensegs(40, segopts);
 
