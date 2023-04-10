@@ -21,4 +21,9 @@ todo.txt
 !*/nstxu/tok/nstxu_tok.mat
 !*/sparc/eq/sweep_init.mat
 !*/sparc/tok/sparc_tok.mat
+!*/sparc/pulses/EXAMPLE002/data/eq_low_ip.mat
+!*/sparc/pulses/EXAMPLE002/data/eqLSN.mat
+!*/sparc/pulses/EXAMPLE002/data/startup_currents.mat
+
+
 

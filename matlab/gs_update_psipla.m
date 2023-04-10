@@ -11,7 +11,8 @@
 % 
 %          eqs0 - previous iteration of equilibria, after performing
 %                 boundary tracing. x-points and other parameters should be
-%                 self-consistent with the flux distribution
+%                 self-consistent with the flux distribution. (but will not 
+%                 be a Grad-Shafranov current distribution if not converged) 
 %
 %          pcurrt - plasma current distribution for all equilibria
 
@@ -88,6 +89,9 @@ for i = 1:N
   H(1,:) = [R'*b.pprimezr  1./(mu0 * R') * b.ffprimzr] * dA;
   H(2,1) = 3*pi*R'*b.preszr*dA;
   
+  % this equation for li is a bit hand-wavy see accompanying paper (it is 
+  % actually specifying the ratio of the cf1 and cf2 coefficients, not li).
+  % Future work will improve this. 
   alpha = interp1([0.5 1.2], [-4 -10], li, 'linear', 'extrap');
   H(3,:) = [0 1 alpha];
   
