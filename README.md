@@ -47,7 +47,9 @@ Examples are included for NSTX-U, KSTAR, and SPARC tokamaks. A description of th
 
 - **kstar EXAMPLE:** computes a sequence of equilibria starting with rampup and then diverting, loosely based on kstar shot 23436. 
 
-- **sparc EXAMPLE:** designs a strike point sweep that holds core shaping constant and satisfies power supply constraints, beginning with a 5MA, lower-single null equilibrium. 
+- **sparc EXAMPLE_001:** designs a strike point sweep that holds core shaping constant and satisfies power supply constraints, beginning with a 5MA, lower-single null equilibrium. 
+
+- **sparc EXAMPLE_002:** designs the first few seconds of the sparc primary reference discharge, beginning with coil and vessel currents from plasma breakdown+startup
 
 
 To run any of these:
