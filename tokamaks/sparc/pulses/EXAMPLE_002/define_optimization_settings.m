@@ -10,20 +10,20 @@ function settings = define_optimization_settings(tok)
 
 % time base for optimization
 s.t0 = 0.5;                       % start time
-s.tf = 24;                        % end time
-s.N = 30;                         % number of timepoints (equilibria), more than 100 takes a while
+s.tf = 12;                        % end time
+s.N = 50;                         % number of timepoints (equilibria), more than 100 takes a while
 s.t = linspace(s.t0, s.tf, s.N)'; % timebase
 s.dt = mean(diff(s.t));           % time step
 
 
 % number of Grad-Shafranov iterations to perform
-s.niter = 4;  
+s.niter = 10;  
 
 
 % relaxation factor for updating the plasma current each iteration. It is 
 % generally stable with c_relax=1, but can be decreased if solution is not 
 % converging. (range 0-1)
-s.c_relax = 1;
+s.c_relax = 0.5;
 
 
 % Compress vessel elements (recommended for computational speedup if tok.nv

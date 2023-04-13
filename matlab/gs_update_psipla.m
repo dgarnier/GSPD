@@ -107,7 +107,9 @@ for i = 1:N
   eq.psipla = mpp * pcurrt_i(:);
   eq.psipla = reshape(eq.psipla, nz, nr);
   eq.psizr = eq.psiapp + eq.psipla;
-  
+  eq.pprime = b.pprime * c(1);
+  eq.ffprim = b.ffprim1*c(2) + b.ffprim2*c(3);
+  eq.psin = b.psin;
 
   eqs1{i} = eq;
   pcurrt(:,i) = pcurrt_i(:);

@@ -21,10 +21,12 @@ for dum = settings.fds2control(:)'
   fd = dum{:};
   wts.(fd).Time = t(:);
   dwts.(fd).Time = t(:);
+  d2wts.(fd).Time = t(:);
 
   ny = size(targs.(fd).Data, 2);
   wts.(fd).Data  = zeros(N,ny);    
-  dwts.(fd).Data = zeros(N,ny);    
+  dwts.(fd).Data = zeros(N,ny); 
+  d2wts.(fd).Data = zeros(N,ny);
 end
 wts.v.Time = t(:);
 dwts.v.Time = t(:);
@@ -46,18 +48,24 @@ wts.diff_psicp_psix.Data  = sigmoidn(t, 2.5, 3, 0, 1) * ones(1,ncp) * 5e6;
 
 
 % weight on flux gradient turns on as plasma diverts
-wts.psix_r.Data(:) = sigmoidn(t, 2.5, 3, 0, 1) * 3e7;
-wts.psix_z.Data(:) = sigmoidn(t, 2.5, 3, 0, 1) * 3e7;
+wts.psix_r.Data(:) = sigmoidn(t, 2.5, 3, 0, 1) * 1e8;
+wts.psix_z.Data(:) = sigmoidn(t, 2.5, 3, 0, 1) * 1e8;
 
 
-% weight the outer boundary point even higher
-% wts.diff_psicp_psitouch.Data(:,1) = wts.diff_psicp_psitouch.Data(:,1) * 30;
-% wts.diff_psicp_psix.Data(:,1)     = wts.diff_psicp_psix.Data(:,1) * 30;
+% weight on specific points even higher
+i = 18:22;
+% wts.diff_psicp_psitouch.Data(:,i) = wts.diff_psicp_psitouch.Data(:,i);
+wts.diff_psicp_psix.Data(:,i)     = wts.diff_psicp_psix.Data(:,i) * 100;
 
 
 % all coils free except VSC
 % wts.ic.Data  = ones(N,1) * [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1e1];
 wts.ic.Data  = ones(N,1) * [ones(1,18)*1e-3 1];
+
+
+% weight on the 2nd derivative of the coil currents (to penalize non-smooth
+% trajectories)
+d2wts.ic.Data = ones(N,1) * [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1] * 0.2;
 
 
 % no weight on absolute voltage
@@ -68,7 +76,7 @@ wts.v.Data = zeros(N,nu);
 dwts.v.Data = ones(N,1) * [1 1 3 3 3 3 4 4 1 1 1 1 0.5 0.5 20 20 20 20 100] * 0.1;
 
 
-weights = variables2struct(wts, dwts);
+weights = variables2struct(wts, dwts, d2wts);
 
 
 if opts.plotlevel >= 2

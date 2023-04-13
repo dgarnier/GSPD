@@ -2,7 +2,7 @@ clear all; clc; close all
 
 %% Initialization
 opts = struct;
-opts.plotlevel = 1;  % 0=no plots, 1=minimal plots, 2=lotsa plots
+opts.plotlevel = 0;  % 0=no plots, 1=minimal plots, 2=lotsa plots
 
 tok              = load_tok('sparc_tok');
 shapes           = define_shapes(opts);
@@ -14,11 +14,11 @@ weights          = define_optimization_weights(targs, settings, opts);
 
 
 
-%% Solve Grad-Shafanov + circuit dynamics
+%% Solve Grad-Shafanov  circuit dynamics
 soln = GSPD(tok, shapes, plasma_scalars, init, settings, ...
   targs, weights, opts);
 
-
+save('soln_base','soln')
 
 %% Plot results
 if opts.plotlevel >= 1
