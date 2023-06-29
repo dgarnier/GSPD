@@ -1,4 +1,4 @@
-function plot_efit_region(z, r, dz, dr, ac, ac2, rgb, varargin)
+function h = plot_efit_region(z, r, dz, dr, ac, ac2, rgb, varargin)
 %
 % PLOT_EFIT_REGION Function for plotting a parallelogram with geometry
 %                  described by the EFIT conductor representation.
@@ -74,6 +74,6 @@ if ac == 0 && ac2 ~= 0
 end
 
 % Plot the parallelogram
-fill([r1 r2 r3 r4],  [z1 z2 z3 z4], rgb, varargin{:});
+h = fill([r1 r2 r3 r4],  [z1 z2 z3 z4], rgb, varargin{:});
 
 end

@@ -63,7 +63,14 @@ wts.v.Data = zeros(N,nu);
 % proportional to 1/coil inductance, but not too sensitive to the weighting
 dwts.v.Data = ones(N,1) * [1 1 1 1 0.2 1 1 1];
 
+% weight on the 2nd derivative of the coil currents (to penalize non-smooth
+% trajectories)
+% d2wts.ic.Data = ones(N,1) * [1 1 1 1 1 1 1 1 1 1 1 1 1] * 0.2;
+wts.ic.Data = ones(N,1) * [0 0 0 0 1 0 0 0 0 1 0 0 0] * 100;
+
+
 weights = variables2struct(wts, dwts, d2wts);
+
 
 
 if opts.plotlevel >= 2

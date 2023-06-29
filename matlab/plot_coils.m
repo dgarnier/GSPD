@@ -1,50 +1,118 @@
-% Helper plotting function. 
-%
-% Makes a plot of coil values (such as coil currents, or coil voltages). 
-% Plots them individually for each coil grouping (CS, PF, DV, VS)
+function plot_coils(tok, c, alpha)
+
+fcdata = tok.fcdata;
+ecdata = [];
+if isfield(tok, 'ecdata') && ~isempty(tok.ecdata)
+  ecdata = tok.ecdata;
+  xmin = min(ecdata(2,:) - ecdata(4,:)/2);
+  xmax = max(ecdata(2,:) + ecdata(4,:)/2);
+  ymin = min(ecdata(1,:) - ecdata(3,:)/2);
+  ymax = max(ecdata(1,:) + ecdata(3,:)/2);
+  xcenter = (xmin + xmax)/2;
+  ycenter = (ymin + ymax)/2;
+  dx = xmax - xmin;
+  dy = ymax - ymin;
+  ecdata = [ycenter xcenter dy dx 0 0]';  
+end
+ccdata = [ecdata fcdata];
+nc = size(ccdata,2);
 
 
-function ax = plot_coils(t, y, tok_data_struct, ystring, varargin)
-
-circ = sparc_circ(tok_data_struct);
-iy = circ.iy.coil_circuits;
-
-if size(y,1) ~= length(t)
-  y = y'; 
+% housekeeping
+if ~exist('c','var') || isempty(c)
+  c = [1 0.75 0];
 end
 
-ax(1) = subplot(221);
-i = iy.CS1U:2:iy.CS3L;
-plot(t, y(:,i), varargin{:})
-legend(circ.cxnames{i}, 'location', 'best', 'fontsize', 14)
-xlabel('Time [s]', 'fontsize', 14)
-ylabel(ystring, 'fontsize', 14)
+if ischar(c)
+  c = bitget(find('krgybmcw'==c)-1,1:3);
+end
+
+if ~exist('alpha','var') || isempty(alpha)
+  alpha = 1;
+end
+
+if size(c,1) ~= nc, c = ones(nc,1)*c; end
+if isscalar(alpha), alpha = alpha*ones(nc,1); end
 
 
-ax(2) = subplot(222);
-i = iy.PF1U:2:iy.PF4L;
-plot(t, y(:,i), varargin{:})
-legend(circ.cxnames{i}, 'location', 'best', 'fontsize', 14)
-xlabel('Time [s]', 'fontsize', 14)
-ylabel(ystring, 'fontsize', 14)
+% plot coils
+for i = 1:nc
+  
+%   y = ccdata(1,i) - ccdata(3,i)/2;
+%   x = ccdata(2,i) - ccdata(4,i)/2;
+%   dx = ccdata(4,i);
+%   dy = ccdata(3,i);
+%   position = [x y dx dy];
+% 
+%   h = rectangle('Position', position);
+%   h.FaceColor = [c(i,:) alpha(i)];
+%   h.EdgeColor = c(i,:) * min(1-alpha(i), 0.8);
+
+  z = ccdata(1,i);
+  r = ccdata(2,i);
+  dz = ccdata(3,i);
+  dr = ccdata(4,i);
+  ac = ccdata(5,i);
+  ac2 = ccdata(6,i);
+  rgb = [0 0 0];
+  
+  if alpha(i) ~= 0
+    h = plot_efit_region(z, r, dz, dr, ac, ac2, rgb);
+    
+    %   h = rectangle('Position', position);
+    h.FaceColor = c(i,:);
+    h.FaceAlpha = alpha(i);
+    h.EdgeColor = c(i,:) * min(1-alpha(i), 0.8);
+  end
+
+end
 
 
-ax(3) = subplot(223);
-i = iy.DV1U:2:iy.DV2L;
-plot(t, y(:,i), varargin{:})
-legend(circ.cxnames{i}, 'location', 'best', 'fontsize', 14)
-xlabel('Time [s]', 'fontsize', 14)
-ylabel(ystring, 'fontsize', 14)
+% axis
+xmax = max(ccdata(2,:));
+xmin = min(ccdata(2,:));
+ymax = max(ccdata(1,:));
+ymin = min(ccdata(1,:));
+axis equal
+dx = (xmax-xmin)*0.1;
+dy = (ymax-ymin)*0.1;
+
+axis([xmin-dx xmax+dx ymin-dy ymax+dy])
 
 
 
-ax(4) = subplot(224);
-i = iy.VS1;
-plot(t, y(:,i), varargin{:})
-legend(circ.cxnames{i}, 'location', 'best', 'fontsize', 14)
-xlabel('Time [s]', 'fontsize', 14)
-ylabel(ystring, 'fontsize', 14)
-ylim([-1 1])
 
-linkaxes(ax, 'x')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

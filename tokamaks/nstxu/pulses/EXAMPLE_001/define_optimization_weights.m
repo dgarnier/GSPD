@@ -21,10 +21,12 @@ for dum = settings.fds2control(:)'
   fd = dum{:};
   wts.(fd).Time = t(:);
   dwts.(fd).Time = t(:);
+  d2wts.(fd).Time = t(:);
 
   ny = size(targs.(fd).Data, 2);
   wts.(fd).Data  = zeros(N,ny);    
   dwts.(fd).Data = zeros(N,ny);    
+  d2wts.(fd).Data = zeros(N,ny);    
 end
 wts.v.Time = t(:);
 dwts.v.Time = t(:);
@@ -61,7 +63,7 @@ wts.v.Data = zeros(N,nu);
 % proportional to 1/coil inductance, but not too sensitive to the weighting
 dwts.v.Data = ones(N,1) * [1 1 1 1 0.2 1 1 1];
 
-weights = variables2struct(wts, dwts);
+weights = variables2struct(wts, dwts, d2wts);
 
 
 if opts.plotlevel >= 2

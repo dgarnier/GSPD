@@ -25,13 +25,17 @@ for dum = settings.fds2control(:)'
 
   ny = size(targs.(fd).Data, 2);
   wts.(fd).Data  = zeros(N,ny);    
-  dwts.(fd).Data = zeros(N,ny);
-  d2wts.(fd).Data = zeros(N,ny); 
+  dwts.(fd).Data = zeros(N,ny);   
+  d2wts.(fd).Data = zeros(N,ny);    
+
 end
 wts.v.Time = t(:);
 dwts.v.Time = t(:);
+d2wts.v.Time = t(:);
+
 wts.v.Data = zeros(N,nu);
 dwts.v.Data = zeros(N,nu);
+d2wts.v.Data = zeros(N,nu);
 
 %% Populate the weights:
 
@@ -39,29 +43,33 @@ dwts.v.Data = zeros(N,nu);
 wts.psibry.Data(:) = 5e6;  
 
 
-% wt on flux err vs touch-point starts on and turns off as plasma diverts
-wts.diff_psicp_psitouch.Data = sigmoidn(t, 0.15, 0.2, 1, 0) * ones(1,ncp) * 5e6;
+% wt on flux err vs x-point
+wts.diff_psicp_psix.Data  = ones(N,ncp) * 1e6;
+wts.diff_psicp_psix.Data(:,1) = 5e6;
+wts.diff_psicp_psix.Data(:,13) = 1e7;
+wts.diff_psicp_psix.Data(:,21) = 5e6;
+wts.diff_psicp_psix.Data(:,31) = 5e6;
+wts.diff_psicp_psix.Data(:,end) = 5e10;
 
 
-% wt on flux err vs x-point starts off and turns on as plasma diverts
-wts.diff_psicp_psix.Data  = sigmoidn(t, 0.15, 0.2, 0, 1) * ones(1,ncp) * 5e6;
+
+% weight on flux gradient 
+wts.psix_r.Data(:) = 3e7;
+wts.psix_z.Data(:) = 3e7;
 
 
-% weight on flux gradient turns on as plasma diverts
-wts.psix_r.Data(:) = sigmoidn(t, 0.15, 0.25, 0, 1) * 3e7;
-wts.psix_z.Data(:) = sigmoidn(t, 0.15, 0.25, 0, 1) * 3e7;
+% all coils free except VSC
+% wts.ic.Data  = ones(N,1) * [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1e1];
+wts.ic.Data  = ones(N,1) * [ones(1,18)*1e-3 1];
 
-
-% weight the outer boundary point even higher
-wts.diff_psicp_psitouch.Data(:,1) = wts.diff_psicp_psitouch.Data(:,1) * 30;
-wts.diff_psicp_psix.Data(:,1)     = wts.diff_psicp_psix.Data(:,1) * 30;
 
 % no weight on absolute voltage
 wts.v.Data = zeros(N,nu);   
 
 % weight on the change in voltage - as is, the weights are roughly
 % proportional to 1/coil inductance, but not too sensitive to the weighting
-dwts.v.Data = ones(N,1) * [1 1 1 1 0.2 1 1 1];
+dwts.v.Data = ones(N,1) * [1 1 3 3 3 3 4 4 1 1 1 1 0.5 0.5 20 20 20 20 100] * 0.1;
+
 
 weights = variables2struct(wts, dwts, d2wts);
 

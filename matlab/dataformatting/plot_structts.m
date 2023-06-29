@@ -20,7 +20,7 @@ figure(fighandle);
 
 for i = 1:N
   fd = fdnames{i};
-  subplot(nrows, ncols, i)
+  ax(i) = subplot(nrows, ncols, i);
   hold on
   grid on
   plot( s.(fd).Time, s.(fd).Data, varargin{:});
@@ -30,7 +30,7 @@ for i = 1:N
   end
   xlabel('time')
 end
-
+linkaxes(ax, 'x')
   
 
 

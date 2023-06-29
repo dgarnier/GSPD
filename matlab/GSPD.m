@@ -44,7 +44,8 @@ end
 fprintf('\nPerforming final boundary trace\n\n')
 for i = 1:settings.N
   fprintf('  Tracing boundary: %d of %d ...\n', i, settings.N);
-  eqs{i} = find_bry(eqs{i}.psizr, tok, 0);  
+  eq = find_bry(eqs{i}.psizr, tok, 0);  
+  eqs{i} = copyfields(eqs{i}, eq, [], 1);
 end
 
 
