@@ -1,4 +1,3 @@
-# GSPD (Grad-Shafranov Pulse Design)
 
 ## The very quickstart guide
 
@@ -8,6 +7,8 @@
 Step 1: run startup.m
 Step 2: cd to a <tokamak>/pulses/EXAMPLE folder and run pulse.m
 ```
+
+The algorithm is described in detail in an arxiv [preprint](https://arxiv.org/abs/2306.13163), with peer-reviewed journal publication forthcoming. Please cite as appropriate if you use the code for any published work. 
 
 
 ## The longer quickstart guide 
